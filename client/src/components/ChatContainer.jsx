@@ -33,9 +33,9 @@ const ChatContainer = () => {
 
       {/* Ambient orbs — GPU-only via transform */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none animate-float"
-        style={{ background: 'radial-gradient(circle, rgba(15,118,110,0.07) 0%, transparent 65%)', willChange: 'transform' }} />
+        style={{ background: 'radial-gradient(circle, rgba(109,40,217,0.07) 0%, transparent 65%)', willChange: 'transform' }} />
       <div className="absolute bottom-24 left-0 w-72 h-72 pointer-events-none animate-float"
-        style={{ background: 'radial-gradient(circle, rgba(20,184,166,0.04) 0%, transparent 65%)', animationDelay: '2.5s', willChange: 'transform' }} />
+        style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 65%)', animationDelay: '2.5s', willChange: 'transform' }} />
 
       {/* Header */}
       <header
@@ -47,7 +47,7 @@ const ChatContainer = () => {
             whileHover={{ scale: 1.1, rotate: 6 }}
             transition={{ type: 'spring', stiffness: 300, damping: 14 }}
             className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg glow-ring"
-            style={{ background: 'linear-gradient(135deg, #0F766E, #14B8A6)', willChange: 'transform' }}
+            style={{ background: 'linear-gradient(135deg, #6D28D9, #A78BFA)', willChange: 'transform' }}
           >
             <Bot className="text-white w-5 h-5" strokeWidth={2} />
           </motion.div>
@@ -58,11 +58,11 @@ const ChatContainer = () => {
                 animate={{ scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
                 className="w-2 h-2 rounded-full"
-                style={{ background: '#22C55E', willChange: 'transform, opacity' }}
+                style={{ background: '#A78BFA', willChange: 'transform, opacity' }}
               />
             </h2>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <Activity className="w-3 h-3" style={{ color: '#14B8A6' }} />
+              <Activity className="w-3 h-3" style={{ color: '#A78BFA' }} />
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Active · AI Processing</p>
             </div>
           </div>
@@ -71,7 +71,7 @@ const ChatContainer = () => {
         <motion.div
           whileHover={{ scale: 1.04 }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold shimmer-parent"
-          style={{ background: 'rgba(34,197,94,0.08)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}
+          style={{ background: 'rgba(167,139,250,0.08)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.2)' }}
         >
           <Wifi className="w-3 h-3" /> Live
         </motion.div>
@@ -95,7 +95,7 @@ const ChatContainer = () => {
               style={{ background: '#111827', border: '1px solid #1F2937' }}
             >
               {[0, 1, 2].map(i => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: '#14B8A6', animation: `dotBounce 1s ease-in-out ${i * 0.18}s infinite` }} />
+                <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: '#A78BFA', animation: `dotBounce 1s ease-in-out ${i * 0.18}s infinite` }} />
               ))}
             </motion.div>
           )}

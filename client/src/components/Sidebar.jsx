@@ -18,7 +18,7 @@ const Sidebar = () => (
     <div
       className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full pointer-events-none animate-float"
       style={{
-        background: 'radial-gradient(circle, rgba(15,118,110,0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(109,40,217,0.12) 0%, transparent 70%)',
         willChange: 'transform',
       }}
     />
@@ -31,7 +31,7 @@ const Sidebar = () => (
         transition={{ type: 'spring', stiffness: 300, damping: 15 }}
         className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shimmer-parent glow-ring flex-shrink-0"
         style={{
-          background: 'linear-gradient(135deg, #0F766E, #14B8A6)',
+          background: 'linear-gradient(135deg, #6D28D9, #A78BFA)',
           willChange: 'transform',
         }}
       >
@@ -64,14 +64,14 @@ const Sidebar = () => (
           className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors duration-200 group relative overflow-hidden ${item.active ? 'shimmer-parent' : ''}`}
           style={
             item.active
-              ? { background: 'rgba(20,184,166,0.1)', color: '#14B8A6', border: '1px solid rgba(20,184,166,0.15)' }
+              ? { background: 'rgba(167,139,250,0.1)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.15)' }
               : { color: '#9CA3AF' }
           }
         >
           <item.icon className="w-4 h-4 flex-shrink-0 transition-colors duration-200" />
           <span>{item.name}</span>
           {item.active && (
-            <span className="ml-auto w-1.5 h-1.5 rounded-full badge-glow flex-shrink-0" style={{ background: '#14B8A6' }} />
+            <span className="ml-auto w-1.5 h-1.5 rounded-full badge-glow flex-shrink-0" style={{ background: '#A78BFA' }} />
           )}
         </motion.a>
       ))}
@@ -82,14 +82,14 @@ const Sidebar = () => (
       className="p-4 rounded-xl flex items-center gap-3 mt-4 relative z-10 shimmer-parent"
       style={{ background: '#111827', border: '1px solid #1F2937' }}
     >
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(15,118,110,0.2)' }}>
-        <Zap className="w-4 h-4" style={{ color: '#14B8A6' }} />
+      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(109,40,217,0.2)' }}>
+        <Zap className="w-4 h-4" style={{ color: '#A78BFA' }} />
       </div>
       <div>
         <p className="text-xs font-bold" style={{ color: '#F9FAFB' }}>Support v1.2</p>
         <p className="text-[10px]" style={{ color: '#9CA3AF' }}>System Online</p>
       </div>
-      <div className="ml-auto w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ background: '#22C55E' }} />
+      <div className="ml-auto w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ background: '#A78BFA' }} />
     </div>
   </aside>
 );

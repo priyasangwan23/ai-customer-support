@@ -22,7 +22,7 @@ const QuickActions = ({ onAction }) => (
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08 }}
-          whileHover={{ y: -2, borderColor: '#14B8A6' }}
+          whileHover={{ y: -2, borderColor: '#A78BFA' }}
           whileTap={{ scale: 0.96 }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200"
           style={{
@@ -31,8 +31,8 @@ const QuickActions = ({ onAction }) => (
             color: '#9CA3AF',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.color = '#14B8A6';
-            e.currentTarget.style.borderColor = 'rgba(20,184,166,0.4)';
+            e.currentTarget.style.color = '#A78BFA';
+            e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.color = '#9CA3AF';

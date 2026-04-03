@@ -29,12 +29,12 @@ const MessageBubble = ({ message }) => {
         <div
           className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mb-1"
           style={isBot
-            ? { background: 'rgba(20,184,166,0.15)', border: '1px solid rgba(20,184,166,0.25)' }
-            : { background: 'rgba(15,118,110,0.25)', border: '1px solid rgba(20,184,166,0.2)' }}
+            ? { background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.25)' }
+            : { background: 'rgba(109,40,217,0.25)', border: '1px solid rgba(167,139,250,0.2)' }}
         >
           {isBot
-            ? <Bot  className="w-3 h-3" style={{ color: '#14B8A6' }} />
-            : <User className="w-3 h-3" style={{ color: '#14B8A6' }} />}
+            ? <Bot  className="w-3 h-3" style={{ color: '#A78BFA' }} />
+            : <User className="w-3 h-3" style={{ color: '#A78BFA' }} />}
         </div>
 
         <div className={`flex flex-col gap-0.5 ${isBot ? 'items-start' : 'items-end'}`}>
@@ -46,7 +46,7 @@ const MessageBubble = ({ message }) => {
             className={`relative px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed font-normal ${isBot ? 'shimmer-parent' : 'shimmer-parent'}`}
             style={isBot
               ? { background: '#111827', border: '1px solid #1F2937', color: '#F9FAFB', borderBottomLeftRadius: '4px', willChange: 'transform' }
-              : { background: 'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)', color: '#fff', borderBottomRightRadius: '4px', willChange: 'transform' }}
+              : { background: 'linear-gradient(135deg, #6D28D9 0%, #A78BFA 100%)', color: '#fff', borderBottomRightRadius: '4px', willChange: 'transform' }}
           >
             <p className="whitespace-pre-wrap break-words">{text}</p>
 
@@ -93,7 +93,7 @@ const MessageBubble = ({ message }) => {
                   whileHover={{ scale: 1.18 }} whileTap={{ scale: 0.88 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className="w-6 h-6 rounded-full flex items-center justify-center"
-                  style={{ background: liked ? 'rgba(20,184,166,0.2)' : '#111827', border: '1px solid #1F2937', color: liked ? '#14B8A6' : '#6B7280', willChange: 'transform' }}
+                  style={{ background: liked ? 'rgba(167,139,250,0.2)' : '#111827', border: '1px solid #1F2937', color: liked ? '#A78BFA' : '#6B7280', willChange: 'transform' }}
                 >
                   <ThumbsUp className="w-2.5 h-2.5" />
                 </motion.button>
@@ -103,7 +103,7 @@ const MessageBubble = ({ message }) => {
                   whileHover={{ scale: 1.18 }} whileTap={{ scale: 0.88 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className="w-6 h-6 rounded-full flex items-center justify-center"
-                  style={{ background: copied ? 'rgba(34,197,94,0.15)' : '#111827', border: '1px solid #1F2937', color: copied ? '#22C55E' : '#6B7280', willChange: 'transform' }}
+                  style={{ background: copied ? 'rgba(167,139,250,0.15)' : '#111827', border: '1px solid #1F2937', color: copied ? '#A78BFA' : '#6B7280', willChange: 'transform' }}
                 >
                   <Copy className="w-2.5 h-2.5" />
                 </motion.button>
