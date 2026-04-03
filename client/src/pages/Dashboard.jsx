@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../components/Sidebar';
 import ChatContainer from '../components/ChatContainer';
 import InsightPanel from '../components/InsightPanel';
+import Analytics from './Analytics';
+import Settings from './Settings';
 
 const Dashboard = () => {
   return (
@@ -27,17 +29,9 @@ const Dashboard = () => {
             </div>
           } />
           
-          <Route path="/analytics" element={
-            <div className="flex-1 flex items-center justify-center">
-              <h1 className="text-3xl font-bold text-white uppercase tracking-widest">Analytics View</h1>
-            </div>
-          } />
+          <Route path="/analytics" element={<Analytics />} />
           
-          <Route path="/settings" element={
-            <div className="flex-1 flex items-center justify-center">
-              <h1 className="text-3xl font-bold text-white uppercase tracking-widest">Settings View</h1>
-            </div>
-          } />
+          <Route path="/settings" element={<Settings />} />
           
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />

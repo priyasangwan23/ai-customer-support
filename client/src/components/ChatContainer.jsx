@@ -13,7 +13,15 @@ const ChatContainer = () => {
   const [messages, setMessages]   = useState(initialMessages);
   const [input, setInput]         = useState('');
   const [isTyping, setIsTyping]   = useState(false);
+  const [settings, setSettings]   = useState({ chatbotName: 'SupportSense Assistant', theme: 'dark' });
   const bottomRef                 = useRef(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('chatSettings');
+    if (saved) {
+      setSettings(JSON.parse(saved));
+    }
+  }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
@@ -43,9 +51,11 @@ const ChatContainer = () => {
     }
   };
 
-  return (
-    <div className="flex-1 flex flex-col h-full relative overflow-hidden" style={{ background: '#0B1120' }}>
+  const isLight = settings.theme === 'light';
 
+  return (
+    <div className="flex-1 flex flex-col h-full relative overflow-hidden" style={{ background: isLight ? '#F3F4F6' : '#0B1120', transition: 'background-color 0.3s' }}>
+      
       {/* Ambient orbs — GPU-only via transform */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none animate-float"
         style={{ background: 'radial-gradient(circle, rgba(109,40,217,0.07) 0%, transparent 65%)', willChange: 'transform' }} />
@@ -55,7 +65,7 @@ const ChatContainer = () => {
       {/* Header */}
       <header
         className="px-8 py-4 flex items-center justify-between flex-shrink-0 z-10 shimmer-parent"
-        style={{ background: 'rgba(11,17,32,0.9)', borderBottom: '1px solid #1F2937', backdropFilter: 'blur(16px)' }}
+        style={{ background: isLight ? 'rgba(255,255,255,0.8)' : 'rgba(11,17,32,0.9)', borderBottom: `1px solid ${isLight ? '#E5E7EB' : '#1F2937'}`, backdropFilter: 'blur(16px)' }}
       >
         <div className="flex items-center gap-4">
           <motion.div
@@ -67,8 +77,8 @@ const ChatContainer = () => {
             <Bot className="text-white w-5 h-5" strokeWidth={2} />
           </motion.div>
           <div>
-            <h2 className="font-bold text-sm flex items-center gap-2" style={{ color: '#F9FAFB' }}>
-              SupportSense Assistant
+            <h2 className="font-bold text-sm flex items-center gap-2" style={{ color: isLight ? '#111827' : '#F9FAFB' }}>
+              {settings.chatbotName || 'SupportSense Assistant'}
               <motion.span
                 animate={{ scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -123,11 +133,11 @@ const ChatContainer = () => {
       {/* Input */}
       <footer
         className="px-6 py-4 flex-shrink-0 z-10"
-        style={{ background: 'rgba(11,17,32,0.9)', borderTop: '1px solid #1F2937', backdropFilter: 'blur(16px)' }}
+        style={{ background: isLight ? 'rgba(255,255,255,0.8)' : 'rgba(11,17,32,0.9)', borderTop: `1px solid ${isLight ? '#E5E7EB' : '#1F2937'}`, backdropFilter: 'blur(16px)' }}
       >
         <div
           className="flex items-center gap-3 px-4 py-2.5 rounded-2xl glow-ring"
-          style={{ background: '#111827', border: '1px solid #1F2937' }}
+          style={{ background: isLight ? '#F9FAFB' : '#111827', border: `1px solid ${isLight ? '#E5E7EB' : '#1F2937'}` }}
         >
           <button className="w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0 transition-colors"
             style={{ color: '#9CA3AF' }}>
@@ -153,7 +163,7 @@ const ChatContainer = () => {
           </motion.button>
         </div>
         <p className="text-center text-[10px] mt-2" style={{ color: '#6B7280' }}>
-          SupportSense AI · Responses may vary
+          {settings.chatbotName || 'SupportSense AI'} · Responses may vary
         </p>
       </footer>
     </div>
