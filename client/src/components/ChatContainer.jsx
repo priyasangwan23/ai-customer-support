@@ -17,15 +17,30 @@ const ChatContainer = () => {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  const send = () => {
+  const send = async () => {
     if (!input.trim()) return;
-    setMessages(p => [...p, { id: Date.now(), text: input, isBot: false, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+    const userMessage = input;
+    setMessages(p => [...p, { id: Date.now(), text: userMessage, isBot: false, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
     setInput('');
     setIsTyping(true);
-    setTimeout(() => {
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+      const data = await response.json();
+      
       setIsTyping(false);
-      setMessages(p => [...p, { id: Date.now() + 1, text: "Thanks for reaching out! Let me look into that right away.", isBot: true, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
-    }, 1400);
+      setMessages(p => [...p, { id: Date.now() + 1, text: data.reply, isBot: true, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+    } catch (error) {
+      console.error("Chat API Error:", error);
+      setIsTyping(false);
+      setMessages(p => [...p, { id: Date.now() + 1, text: "Error: Could not reach the server.", isBot: true, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+    }
   };
 
   return (
