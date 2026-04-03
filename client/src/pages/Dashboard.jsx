@@ -7,6 +7,7 @@ import ChatContainer from '../components/ChatContainer';
 import InsightPanel from '../components/InsightPanel';
 import Analytics from './Analytics';
 import Settings from './Settings';
+import ControlCenter from './ControlCenter';
 
 const Dashboard = () => {
   return (
@@ -22,12 +23,8 @@ const Dashboard = () => {
             </div>
           } />
 
-          {/* Placeholders for other routes */}
-          <Route path="/dashboard" element={
-            <div className="flex-1 flex items-center justify-center">
-              <h1 className="text-3xl font-bold text-white uppercase tracking-widest">Main Dashboard View</h1>
-            </div>
-          } />
+          {/* New AI Control Center View */}
+          <Route path="/dashboard" element={<ControlCenter />} />
           
           <Route path="/analytics" element={<Analytics />} />
           
