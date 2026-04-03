@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, MessageSquare, BarChart2, Settings, ShieldCheck, Zap } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, BarChart2, Settings, Zap } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 const menuItems = [
   { name: 'Main Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -28,15 +29,15 @@ const Sidebar = () => (
     <div className="flex items-center gap-3 mb-10 px-2 pt-2 relative z-10">
       {/* Logo with shimmer */}
       <motion.div
-        whileHover={{ scale: 1.08, rotate: 5 }}
+        whileHover={{ scale: 1.1, rotate: 2 }}
         transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-        className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg glass-purple glow-ring flex-shrink-0"
+        className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg glass-purple glow-ring glow-border flex-shrink-0 p-1"
         style={{
-          background: 'linear-gradient(135deg, #6D28D9, #A78BFA)',
+          background: 'rgba(11, 17, 32, 0.8)',
           willChange: 'transform',
         }}
       >
-        <ShieldCheck className="text-white w-5 h-5 relative z-10" strokeWidth={2.5} />
+        <BrandLogo className="w-10 h-10 relative z-10" />
       </motion.div>
       <div>
         <h1 className="text-base font-extrabold tracking-tight leading-none" style={{ color: '#F9FAFB' }}>
