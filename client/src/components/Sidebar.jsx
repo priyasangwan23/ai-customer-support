@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, MessageSquare, BarChart2, Settings, ShieldCheck, Zap } from 'lucide-react';
 
 const menuItems = [
-  { name: 'Main Dashboard', icon: LayoutDashboard },
-  { name: 'All Chats',      icon: MessageSquare, active: true },
-  { name: 'Analytics',      icon: BarChart2 },
-  { name: 'Settings',       icon: Settings },
+  { name: 'Main Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+  { name: 'All Chats',      icon: MessageSquare,   path: '/' },
+  { name: 'Analytics',      icon: BarChart2,       path: '/analytics' },
+  { name: 'Settings',       icon: Settings,        path: '/settings' },
 ];
 
 const Sidebar = () => (
@@ -53,27 +54,37 @@ const Sidebar = () => (
         Main Menu
       </p>
       {menuItems.map((item, i) => (
-        <motion.a
+        <NavLink
           key={item.name}
-          href="#"
-          whileHover={{ x: 5 }}
-          whileTap={{ scale: 0.97 }}
-          initial={{ opacity: 0, x: -14 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.07, type: 'spring', stiffness: 260, damping: 20 }}
-          className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors duration-200 group relative overflow-hidden ${item.active ? 'shimmer-parent' : ''}`}
-          style={
-            item.active
+          to={item.path}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors duration-200 group relative overflow-hidden ${
+              isActive ? 'shimmer-parent' : ''
+            }`
+          }
+          style={({ isActive }) =>
+            isActive
               ? { background: 'rgba(167,139,250,0.1)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.15)' }
               : { color: '#9CA3AF' }
           }
         >
-          <item.icon className="w-4 h-4 flex-shrink-0 transition-colors duration-200" />
-          <span>{item.name}</span>
-          {item.active && (
-            <span className="ml-auto w-1.5 h-1.5 rounded-full badge-glow flex-shrink-0" style={{ background: '#A78BFA' }} />
+          {({ isActive }) => (
+            <>
+              <motion.div
+                initial={{ opacity: 0, x: -14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.07, type: 'spring', stiffness: 260, damping: 20 }}
+                className="flex items-center gap-3 w-full"
+              >
+                <item.icon className="w-4 h-4 flex-shrink-0 transition-colors duration-200" />
+                <span>{item.name}</span>
+                {isActive && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full badge-glow flex-shrink-0" style={{ background: '#A78BFA' }} />
+                )}
+              </motion.div>
+            </>
           )}
-        </motion.a>
+        </NavLink>
       ))}
     </nav>
 
