@@ -64,7 +64,7 @@ const ChatContainer = () => {
 
       {/* Header */}
       <header
-        className="px-8 py-4 flex items-center justify-between flex-shrink-0 z-10 shimmer-parent"
+        className="px-8 py-4 flex items-center justify-between flex-shrink-0 z-10 glass"
         style={{ background: isLight ? 'rgba(255,255,255,0.8)' : 'rgba(11,17,32,0.9)', borderBottom: `1px solid ${isLight ? '#E5E7EB' : '#1F2937'}`, backdropFilter: 'blur(16px)' }}
       >
         <div className="flex items-center gap-4">
@@ -95,7 +95,7 @@ const ChatContainer = () => {
 
         <motion.div
           whileHover={{ scale: 1.04 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold shimmer-parent"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold glass"
           style={{ background: 'rgba(167,139,250,0.08)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.2)' }}
         >
           <Wifi className="w-3 h-3" /> Live
@@ -156,7 +156,7 @@ const ChatContainer = () => {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.93 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 btn-primary shimmer-parent"
+            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 btn-primary glass-purple"
             style={{ willChange: 'transform' }}
           >
             <Send className="w-3.5 h-3.5 ml-0.5" />

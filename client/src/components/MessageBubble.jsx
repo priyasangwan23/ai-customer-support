@@ -43,7 +43,7 @@ const MessageBubble = ({ message }) => {
           <motion.div
             whileHover={{ scale: 1.012 }}
             transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-            className={`relative px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed font-normal ${isBot ? 'shimmer-parent' : 'shimmer-parent'}`}
+            className={`relative px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed font-normal ${isBot ? 'glass' : 'glass-purple'}`}
             style={isBot
               ? { background: '#111827', border: '1px solid #1F2937', color: '#F9FAFB', borderBottomLeftRadius: '4px', willChange: 'transform' }
               : { background: 'linear-gradient(135deg, #6D28D9 0%, #A78BFA 100%)', color: '#fff', borderBottomRightRadius: '4px', willChange: 'transform' }}
