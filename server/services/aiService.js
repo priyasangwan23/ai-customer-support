@@ -25,7 +25,7 @@ class AIService {
       }
       lastCallTime = now;
 
-      // 🚀 1. SETUP MODEL (Switching to 'flash-lite' for better Free Tier availability)
+      // 🚀 1. SETUP MODEL
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash", 
         systemInstruction: {
@@ -35,12 +35,14 @@ class AIService {
           }]
         },
         generationConfig: {
-          maxOutputTokens: 1200, // Slightly lower than full Flash to save quota
+          maxOutputTokens: 1200,
           temperature: 0.7,
-          topP: 0.9,
         },
         safetySettings: [
-          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
         ],
       });
 
@@ -59,20 +61,24 @@ class AIService {
       formattedHistory = formattedHistory.slice(-4);
 
       // 🧠 3. START CHAT
-      const chat = model.startChat({ history: formattedHistory });
+      const chat = model.startChat({ history: formattedHistory || [] });
       
       let finalPrompt = message;
       if (fileContext) {
-        finalPrompt = `[User has attached a file: ${fileContext.fileName} (${fileContext.fileType}). URL: ${fileContext.url}]\n\nUser Question: ${message}`;
+        finalPrompt = `[User attached: ${fileContext.fileName}]. ${message}`;
       }
 
-      console.log(`[AI] Calling Gemini 1.5 Flash for: ${message}`);
+      const enhancedPrompt = `${finalPrompt}\n\n[ANALYSIS FORMAT: <ANALYSIS> Sentiment: ... | Intent: ... | Action: ... </ANALYSIS>]`;
 
-      // 🔥 ENHANCED PROMPT: Ask for the reply AND analysis tags
-      const enhancedPrompt = `${finalPrompt}\n\n[INSTRUCTION: After your reply, on a new line, provide analysis in this format: <ANALYSIS> Sentiment: (Positive|Neutral|Negative) | Intent: (Short Intent Category) | Action: (1-step suggested action) </ANALYSIS>]`;
-
+      console.log(`[AI-TRANSCEIVER] Transmitting to Gemini 1.5...`);
+      
       const result = await chat.sendMessage(enhancedPrompt);
       const response = await result.response;
+      
+      if (!response || !response.text) {
+        throw new Error("AI returned an empty or invalid response object.");
+      }
+
       const rawText = response.text().trim();
 
       // Parse result
@@ -84,23 +90,29 @@ class AIService {
         reply = rawText.replace(/<ANALYSIS>.*?<\/ANALYSIS>/s, '').trim();
         const tags = analysisMatch[1].trim().split('|');
         tags.forEach(tag => {
-          const [key, val] = tag.split(':').map(s => s.trim());
-          if (key === 'Sentiment') insights.sentiment = val;
-          if (key === 'Intent') insights.intent = val;
-          if (key === 'Action') insights.suggestedAction = val;
+          const pair = tag.split(':');
+          if (pair.length === 2) {
+            const key = pair[0].trim();
+            const val = pair[1].trim();
+            if (key === 'Sentiment') insights.sentiment = val;
+            if (key === 'Intent') insights.intent = val;
+            if (key === 'Action') insights.suggestedAction = val;
+          }
         });
       }
 
       return { reply, insights };
 
     } catch (error) {
-      console.error("AI Error:", error.message);
-      let errReply = "Service currently unavailable.";
-      if (error.message.includes('429')) errReply = "Free quota reached.";
+      console.error("🔥 [AI-CRITICAL-ERROR]:", error);
+      
+      let errReply = "My intelligence circuits are experiencing a throughput delay. Please try again in 30 seconds.";
+      if (error.message.includes('429')) errReply = "API Overloaded. Switching to backup nodes... please wait.";
+      if (error.message.includes('key')) errReply = "Configuration error: System API Key invalid/missing.";
       
       return { 
         reply: errReply, 
-        insights: { sentiment: 'Neutral', intent: 'Error Handle', suggestedAction: 'Retry' } 
+        insights: { sentiment: 'Neutral', intent: 'System Error', suggestedAction: 'Contact Support' } 
       };
     }
   }
