@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Bot, Send, Plus, Mic, Activity, Wifi, Sparkles, ChevronDown, X, File
+  Bot, Send, Plus, Mic, Square, Activity, Wifi, Sparkles, ChevronDown, X, File
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import QuickActions from './QuickActions';
@@ -13,6 +13,29 @@ const WELCOME_MESSAGE = {
   isBot: true,
   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
 };
+
+const COMMON_SUGGESTIONS = [
+  "Track my order",
+  "Refund status",
+  "Cancel my order",
+  "Reset my password",
+  "Talk to human",
+  "Shipping time",
+  "Business hours",
+  "Return policy",
+  "Damaged product",
+  "Update delivery address",
+  "Payment methods",
+  "Invoice request",
+  "Delete my account",
+  "How to change my email?",
+  "Are my payments safe?",
+  "Bulk order discount",
+  "Warranty information",
+  "Speak to manager",
+  "Product availability",
+  "Change shipping method"
+];
 
 /* ─── Typing Indicator ──────────────────────────────────── */
 const TypingIndicator = () => (
@@ -105,12 +128,13 @@ const ChatContainer = () => {
   const [isListening, setIsListening]     = useState(false);
   const [selectedFile, setSelectedFile]   = useState(null);
   const [settings, setSettings]           = useState({ chatbotName: 'SupportSense Assistant', theme: 'dark' });
+  const [suggestions, setSuggestions]     = useState([]);
 
-  const bottomRef    = useRef(null);
-  const containerRef = useRef(null);
-  const inputRef     = useRef(null);
-  const fileInputRef = useRef(null);
-  // Track which conversation is currently displayed to avoid redundant reloads
+  const bottomRef     = useRef(null);
+  const containerRef  = useRef(null);
+  const inputRef      = useRef(null);
+  const fileInputRef  = useRef(null);
+  const recognitionRef = useRef(null); 
   const loadedConvRef = useRef(null);
 
   // ── Settings from localStorage ────────────────────────────
@@ -119,7 +143,24 @@ const ChatContainer = () => {
     if (saved) setSettings(JSON.parse(saved));
   }, []);
 
-  // ── Load messages when active conversation switches ─────────
+  // ── Auto-Suggestions Logic ──────────────────────────────
+  useEffect(() => {
+    if (input.trim().length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    const filtered = COMMON_SUGGESTIONS.filter(s => 
+      s.toLowerCase().includes(input.toLowerCase()) && 
+      s.toLowerCase() !== input.toLowerCase().trim()
+    ).slice(0, 4);
+    setSuggestions(filtered);
+  }, [input]);
+
+  const handleSuggestionClick = (text) => {
+    setInput(text);
+    setSuggestions([]);
+    setTimeout(() => send(text), 100);
+  };
   // Deps: only activeConversationId. We intentionally exclude `conversations`
   // and `getConversationMessages` to prevent this effect from re-running every
   // time a message is appended (which updates conversations state).
@@ -173,6 +214,12 @@ const ChatContainer = () => {
   }, []);
 
   const handleVoiceInput = () => {
+    // If already listening, stop it (Toggle behavior)
+    if (isListening) {
+      stopVoiceInput();
+      return;
+    }
+
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       alert("Your browser doesn't support speech recognition.");
       return;
@@ -180,46 +227,76 @@ const ChatContainer = () => {
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
     
     recognition.continuous = false;
-    recognition.interimResults = true;
+    recognition.interimResults = true; // Set to true for live typing feedback
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
+      console.log("[Voice] Microphone Listening...");
       setIsListening(true);
     };
 
     recognition.onresult = (event) => {
+      let interimTranscript = '';
       let finalTranscript = '';
+
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
           finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
         }
       }
-      if (finalTranscript) {
-        setInput(prev => prev + (prev ? ' ' : '') + finalTranscript);
+      
+      // Update the UI immediately so the user sees we are listening
+      if (interimTranscript) {
+        setInput(interimTranscript);
+      }
+
+      if (finalTranscript.trim()) {
+        console.log("[Voice] Final Transcript Received:", finalTranscript);
+        handleAutoSendVoice(finalTranscript);
       }
     };
 
     recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
+      console.error("[Voice] Recognition Error:", event.error);
       setIsListening(false);
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        alert("Microphone permission denied. Please allow microphone access.");
-      } else if (event.error === 'no-speech') {
-        // Just silently fail or show a subtle hint, no need to alert for no speech to avoid annoyance
+        alert("Microphone access is denied. Please enable mic access in your browser settings (top left address bar).");
       }
     };
 
     recognition.onend = () => {
+      console.log("[Voice] Microphone Stopped.");
       setIsListening(false);
     };
 
     try {
       recognition.start();
     } catch (err) {
-      console.error("Speech recognition exception:", err);
+      console.error("[Voice] Critical Exception:", err);
+      setIsListening(false);
     }
+  };
+
+  const stopVoiceInput = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  };
+
+  // Helper to handle the auto-send from voice
+  const handleAutoSendVoice = async (text) => {
+    // Set input so UI shows what was heard
+    setInput(text);
+    // Short delay to let the user see the text before it's "sent"
+    setTimeout(() => {
+      send(text);
+    }, 400);
   };
 
   const handleFileChange = (e) => {
@@ -230,9 +307,11 @@ const ChatContainer = () => {
     e.target.value = null;
   };
 
-  const send = async () => {
-    if (!input.trim() && !selectedFile) return;
-    const userMessage = input.trim();
+  const send = async (overrideInput = null) => {
+    const textToSubmit = overrideInput !== null ? overrideInput : input;
+    if (!textToSubmit.trim() && !selectedFile) return;
+    
+    const userMessage = textToSubmit.trim();
     const msgId = Date.now();
     const displayText = userMessage + (selectedFile ? ` 📎 ${selectedFile.name}` : '');
 
@@ -445,6 +524,44 @@ const ChatContainer = () => {
       <footer
         className="px-5 pt-3 pb-3 flex-shrink-0 relative bg-chat-footer z-10"
       >
+        <AnimatePresence>
+          {suggestions.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              className="absolute bottom-full left-0 right-0 px-5 pb-3 flex flex-wrap gap-2 pointer-events-none"
+            >
+              {suggestions.map((s, idx) => (
+                <motion.button
+                  key={s}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  onClick={() => handleSuggestionClick(s)}
+                  className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all duration-200"
+                  style={{
+                    background: 'rgba(30,41,59,0.85)',
+                    borderColor: 'rgba(59,130,246,0.2)',
+                    color: '#94A3B8',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    borderColor: 'rgba(59,130,246,0.6)', 
+                    color: '#3B82F6',
+                    background: 'rgba(30,41,59,1)'
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Sparkles size={12} className="text-blue-400" />
+                  {s}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {selectedFile && (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -501,20 +618,27 @@ const ChatContainer = () => {
 
           <motion.button
             onClick={handleVoiceInput}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors ${
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className={`w-9 h-9 flex items-center justify-center flex-shrink-0 transition-all duration-300 relative ${
               isListening ? 'animate-pulse' : ''
             }`}
             style={{ 
               color: isListening ? '#EF4444' : '#475569',
-              background: isListening ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
-              borderRadius: '50%',
-              boxShadow: isListening ? '0 0 10px rgba(239, 68, 68, 0.5)' : 'none'
+              background: isListening ? 'rgba(239, 68, 68, 0.12)' : 'transparent',
+              borderRadius: '12px',
+              border: isListening ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid transparent',
             }}
-            title={isListening ? "Listening..." : "Click to speak"}
+            title={isListening ? "Stop listening" : "Voice search"}
           >
-            <Mic className="w-4 h-4" />
+            {isListening ? (
+              <Square className="w-4 h-4 fill-current" />
+            ) : (
+              <Mic className="w-4 h-4" />
+            )}
+            {isListening && (
+               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#0F172A] animate-ping" />
+            )}
           </motion.button>
 
           <motion.button
