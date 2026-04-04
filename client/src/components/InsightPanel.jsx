@@ -20,7 +20,7 @@ const AnimatedBar = ({ value, color, delay = 0, height = 6 }) => {
   return (
     <div
       className="w-full rounded-full overflow-hidden"
-      style={{ height, background: 'rgba(30,45,71,0.6)' }}
+      style={{ height, background: 'var(--color-bg-track, rgba(30,45,71,0.6))' }}
     >
       <motion.div
         animate={{ width: `${width}%` }}
@@ -54,7 +54,7 @@ const LiveMetric = ({ label, value: initialValue, unit, color, icon: Icon }) => 
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} />
-        <span className="text-xs" style={{ color: '#94A3B8' }}>{label}</span>
+        <span className="text-xs metric-label">{label}</span>
       </div>
       <motion.span
         key={value}
@@ -218,8 +218,8 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
             <SentIcon className="w-5 h-5" style={{ color: sConf.color }} />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-bold" style={{ color: '#F1F5F9' }}>{sentiment}</p>
-            <p className="text-[11px]" style={{ color: '#64748B' }}>{sConf.label}</p>
+            <p className="text-sm font-bold sentiment-heading">{sentiment}</p>
+            <p className="text-[11px] metric-label">{sConf.label}</p>
           </div>
           <div
             className="w-2 h-2 rounded-full flex-shrink-0 badge-glow"
@@ -239,9 +239,9 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
                 whileTap={{ scale: 0.92 }}
                 className="flex-1 py-1.5 rounded-xl text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all"
                 style={{
-                  background: sentiment === key ? cfg.bgColor : 'rgba(13,21,38,0.6)',
-                  border: `1px solid ${sentiment === key ? cfg.borderColor : 'rgba(30,45,71,0.5)'}`,
-                  color: sentiment === key ? cfg.color : '#475569',
+                  background: sentiment === key ? cfg.bgColor : 'var(--color-bg-track)',
+                  border: `1px solid ${sentiment === key ? cfg.borderColor : 'var(--color-border-track)'}`,
+                  color: sentiment === key ? cfg.color : 'var(--color-text-muted)',
                 }}
               >
                 <Ic className="w-3.5 h-3.5" />

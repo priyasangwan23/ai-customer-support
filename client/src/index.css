@@ -477,6 +477,17 @@ html.theme-light label {
   color: #475569 !important;
 }
 
+html.theme-light .metric-label,
+html.theme-light .sentiment-heading {
+  color: #0F172A !important;
+}
+
+html.theme-light {
+  --color-bg-track: #F1F5F9;
+  --color-border-track: #E2E8F0;
+  --color-text-muted: #64748B;
+}
+
 /* ─── Avatar pulse ──────────────────────────────────────── */
 .avatar-pulse {
   animation: avatarPulse 2s ease-in-out infinite;

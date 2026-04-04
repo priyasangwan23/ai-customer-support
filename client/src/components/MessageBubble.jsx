@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, User, CheckCheck, Clock } from 'lucide-react';
+import { Sparkles, User, CheckCheck, Clock } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 /* Streaming text renderer */
 const StreamingText = ({ text, isStreaming }) => {
@@ -55,9 +56,9 @@ const MessageBubble = ({ message, isNew = false }) => {
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mb-1 avatar-pulse"
           style={isBot
               ? {
-                  background: '#3B82F6',
-                  boxShadow: '0 2px 8px rgba(59,130,246,0.3)',
-                  border: '1.5px solid rgba(59,130,246,0.5)',
+                  background: 'rgba(59, 130, 246, 0.05)',
+                  border: '1.5px solid rgba(59, 130, 246, 0.15)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                 }
               : {
                   background: '#1E293B',
@@ -67,8 +68,8 @@ const MessageBubble = ({ message, isNew = false }) => {
           }
         >
           {isBot
-            ? <Bot  className="w-4 h-4 text-white" strokeWidth={2} />
-            : <User className="w-4 h-4" style={{ color: '#94A3B8' }} />
+            ? <BrandLogo className="w-5 h-5 relative z-10" glow={false} />
+            : <User      className="w-4 h-4" style={{ color: '#94A3B8' }} />
           }
         </motion.div>
 

@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Bot, Send, Plus, Mic, Square, Activity, Wifi, Sparkles, ChevronDown, X, File
+  Send, Plus, Mic, Square, Activity, Wifi, Sparkles, ChevronDown, X, File
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import QuickActions from './QuickActions';
+import BrandLogo from './BrandLogo';
 import { useChatHistory } from '../context/ChatContext';
 
 const WELCOME_MESSAGE = {
@@ -48,14 +49,15 @@ const TypingIndicator = () => (
   >
     <div className="flex items-center gap-2.5">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 animate-pulse"
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 animate-pulse relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-          boxShadow: '0 4px 12px rgba(59,130,246,0.3)',
-          border: '1px solid rgba(255,255,255,0.1)'
+          background: 'rgba(59, 130, 246, 0.05)',
+          border: '1.5px solid rgba(59, 130, 246, 0.15)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
         }}
       >
-        <Bot className="w-5 h-5 text-white" strokeWidth={2.5} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15)_0%,transparent_70%)] opacity-40" />
+        <BrandLogo className="w-6 h-6 relative z-10" glow={true} />
       </div>
       
       <div
@@ -479,14 +481,17 @@ const ChatContainer = () => {
         {/* Left: Bot info */}
         <div className="flex items-center gap-3.5">
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="relative w-10 h-10 rounded-xl flex items-center justify-center"
+            whileHover={{ scale: 1.15, rotate: 10 }}
+            className="relative w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
             style={{
-              background: '#3B82F6',
-              boxShadow: '0 2px 8px rgba(59,130,246,0.3)',
+              background: 'rgba(59, 130, 246, 0.05)',
+              border: '1.5px solid rgba(59, 130, 246, 0.15)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
             }}
           >
-            <Bot className="text-white w-5 h-5" strokeWidth={2} />
+            {/* Abstract glow layers */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15)_0%,transparent_70%)] opacity-40" />
+            <BrandLogo className="w-6 h-6 relative z-10" glow={true} />
             <span
               className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2"
               style={{ background: '#10B981', borderColor: '#060B18' }}
