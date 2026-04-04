@@ -1,96 +1,93 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 require("dotenv").config();
 
-// 1. Initialize Gemini
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+/**
+ * 📝 AI SERVICE - APRIL 2026 "LITE" VERSION
+ * MODEL: gemini-2.5-flash-lite (Higher limits for Free Tier)
+ * FIXED: 429 Quota issues by switching to Lite + Longer Cooldown
+ * FIXED: History Role Order (Must start with User)
+ */
 
-// 2. Cooldown system for Free Tier stability
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+
+// 🛡️ Increased Cooldown to 5s to stay under the 20-request threshold
 let lastCallTime = 0;
-const COOLDOWN_MS = 3000;
+const COOLDOWN_MS = 5000;
 
 class AIService {
   async generateResponse(message, history = []) {
     try {
-      // 🛡️ API Key Check
-      if (!genAI) {
-        console.error("CRITICAL: GEMINI_API_KEY missing");
-        return "AI configuration error. Please check .env file.";
-      }
-
-      // 🛡️ Input Validation
-      if (!message || message.trim().length < 2) {
-        return "How can I help you today?";
-      }
-
-      // 🛡️ Rate Limit / Cooldown
+      if (!genAI) return "API Key missing in .env";
+      
       const now = Date.now();
       if (now - lastCallTime < COOLDOWN_MS) {
-        return "I'm thinking! Please give me a second.";
+        return "I'm processing several requests. Please wait a few seconds.";
       }
       lastCallTime = now;
 
-      // 🚀 Configure Model (Updated for April 2026)
+      // 🚀 1. SETUP MODEL (Switching to 'flash-lite' for better Free Tier availability)
       const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        // FIX: systemInstruction MUST be an object with a 'parts' array
+        model: "gemini-2.5-flash-lite", 
         systemInstruction: {
           role: "system",
-          parts: [{ text: "You are an empathetic customer support AI. Be concise (max 3 lines). No fluff." }]
+          parts: [{ 
+            text: "You are a Senior Support Specialist. Provide detailed, step-by-step solutions with bullet points. Be professional and comprehensive." 
+          }]
         },
         generationConfig: {
-          maxOutputTokens: 150,
-          temperature: 0.6,
+          maxOutputTokens: 1200, // Slightly lower than full Flash to save quota
+          temperature: 0.7,
+          topP: 0.9,
         },
+        safetySettings: [
+          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        ],
       });
 
-      // 🔄 Format History for the SDK
-      // Roles must be exactly 'user' or 'model' (not 'bot' or 'assistant')
-      const formattedHistory = history.slice(-4).map(msg => ({
+      // 🔄 2. FORMAT HISTORY (Role validation)
+      let formattedHistory = history.map(msg => ({
         role: msg.sender === 'bot' ? 'model' : 'user',
         parts: [{ text: String(msg.text) }],
       }));
 
-      // 🧠 Start Chat Session
-      const chat = model.startChat({
-        history: formattedHistory,
-      });
+      // 🔥 FIX: Remove any bot messages from the start of the list
+      while (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+        formattedHistory.shift(); 
+      }
 
-      console.log(`[AI Service] Calling gemini-2.5-flash for: "${message}"`);
+      // Limit context to save tokens/quota
+      formattedHistory = formattedHistory.slice(-4);
 
-      // 📤 Send and Receive
+      // 🧠 3. START CHAT
+      const chat = model.startChat({ history: formattedHistory });
+      
+      console.log(`[AI] Calling Gemini 2.5 Flash-Lite for: ${message}`);
+
       const result = await chat.sendMessage(message);
       const response = await result.response;
       const reply = response.text().trim();
 
-      if (!reply) throw new Error("Empty response from AI");
-
-      return reply;
+      return reply || "I couldn't generate a response. Please try a different question.";
 
     } catch (error) {
-      console.error("AI Service Error:", error.message);
+      console.error("AI Error:", error.message);
 
-      // 🚩 Handle specific API errors
-      if (error.message.includes('400')) {
-        return "I had trouble understanding that format. Let's try again.";
-      }
+      // Handle Quota/Rate Limit Errors specifically
       if (error.message.includes('429')) {
-        return "Rate limit reached. Please wait 60 seconds.";
+        return "The daily free limit for this AI key is reached. Please try again in an hour or switch to Groq.";
       }
-      if (error.message.includes('404')) {
-        return "Model endpoint not found. Please verify the Gemini model ID.";
+      if (error.message.includes('role')) {
+        return "Internal Error: Chat history must start with a user message.";
       }
-
-      return "I'm having a quick connection issue. Can you repeat that?";
+      
+      return "Service currently unavailable. Please try again later.";
     }
   }
 
   async summarizeConversation(messages) {
-    if (!messages || messages.length === 0) return "New Support Ticket";
-    // Get the first user message text
-    const firstMsg = messages.find(m => m.sender !== 'bot')?.text || "";
-    return firstMsg.length > 25 ? firstMsg.substring(0, 25) + "..." : "Support Chat";
+    if (!messages || messages.length === 0) return "New Case";
+    const userMsg = messages.find(m => m.sender !== 'bot')?.text || "";
+    return userMsg.length > 25 ? userMsg.substring(0, 25) + "..." : "Support Chat";
   }
 }
 
