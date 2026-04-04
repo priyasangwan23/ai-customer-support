@@ -15,7 +15,7 @@ let lastCallTime = 0;
 const COOLDOWN_MS = 5000;
 
 class AIService {
-  async generateResponse(message, history = []) {
+  async generateResponse(message, history = [], fileContext = null) {
     try {
       if (!genAI) return "API Key missing in .env";
       
@@ -27,7 +27,7 @@ class AIService {
 
       // 🚀 1. SETUP MODEL (Switching to 'flash-lite' for better Free Tier availability)
       const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash-lite", 
+        model: "gemini-1.5-flash", 
         systemInstruction: {
           role: "system",
           parts: [{ 
@@ -61,9 +61,14 @@ class AIService {
       // 🧠 3. START CHAT
       const chat = model.startChat({ history: formattedHistory });
       
-      console.log(`[AI] Calling Gemini 2.5 Flash-Lite for: ${message}`);
+      let finalPrompt = message;
+      if (fileContext) {
+        finalPrompt = `[User has attached a file: ${fileContext.fileName} (${fileContext.fileType}). URL: ${fileContext.url}]\n\nUser Question: ${message}`;
+      }
 
-      const result = await chat.sendMessage(message);
+      console.log(`[AI] Calling Gemini 1.5 Flash for: ${message}`);
+
+      const result = await chat.sendMessage(finalPrompt);
       const response = await result.response;
       const reply = response.text().trim();
 

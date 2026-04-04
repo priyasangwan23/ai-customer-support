@@ -1,28 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const faqService = require('../services/faqService');
 const aiService = require('../services/aiService');
 
-// Use memoryStorage — we don't process files yet, just accept them
-const upload = multer({ storage: multer.memoryStorage() });
-
 // POST /api/chat
-// Accepts both application/json and multipart/form-data (file uploads)
-router.post('/', upload.single('file'), async (req, res) => {
+// Accepts JSON request for faster, more stable conversation
+router.post('/', async (req, res) => {
   try {
-    const message = req.body?.message;
-    let history = [];
+    const { message, history, fileContext } = req.body;
+    let chatHistory = [];
     
-    // Parse history if it's sent as a JSON string (via FormData)
-    try {
-      if (typeof req.body?.history === 'string') {
-        history = JSON.parse(req.body.history);
-      } else if (Array.isArray(req.body?.history)) {
-        history = req.body.history;
-      }
-    } catch (e) {
-      console.warn('[Chat API] Failed to parse history context, using empty array.');
+    // Safety check for history
+    if (Array.isArray(history)) {
+      chatHistory = history;
     }
 
     if (!message || !message.trim()) {
@@ -31,9 +21,9 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     const normalizedMessage = message.trim().toLowerCase();
 
-    // Log whether a file was attached (no processing yet — future AI doc analysis)
-    if (req.file) {
-      console.log(`[Chat API] File received: "${req.file.originalname}" (${req.file.mimetype}) — for future AI doc analysis.`);
+    // Log if file metadata is present
+    if (fileContext) {
+      console.log(`[Chat API] AI Context attached: ${fileContext.fileName} (${fileContext.fileType})`);
     }
 
     // PHASE 1: Try FAQ match (Fast path)
@@ -45,7 +35,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     // PHASE 2: Fallback to AI Service for context-aware response
     console.log(`[Chat API] No FAQ match — generating AI fallback for: "${normalizedMessage}"`);
-    const aiAnswer = await aiService.generateResponse(normalizedMessage, history);
+    const aiAnswer = await aiService.generateResponse(normalizedMessage, chatHistory, fileContext);
     
     return res.json({ reply: aiAnswer });
 

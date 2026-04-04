@@ -2,10 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const chatRoutes = require('./routes/chat');
 const faqRoutes = require('./routes/faq');
 const historyRoutes = require('./routes/history');
+const uploadRoutes = require('./routes/upload');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,10 +16,14 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
+// Serve uploads statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/chat', chatRoutes);
 app.use('/api/faq', faqRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;

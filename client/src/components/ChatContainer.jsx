@@ -308,7 +308,9 @@ const ChatContainer = () => {
   };
 
   const send = async (overrideInput = null) => {
-    const textToSubmit = overrideInput !== null ? overrideInput : input;
+    // 🔥 FIX: Ensure overrideInput is a string, not a React event object
+    const textToSubmit = (typeof overrideInput === 'string') ? overrideInput : input;
+    
     if (!textToSubmit.trim() && !selectedFile) return;
     
     const userMessage = textToSubmit.trim();
@@ -337,39 +339,88 @@ const ChatContainer = () => {
     setSelectedFile(null);
     setIsTyping(true);
 
-    // Persist user message to history (fire-and-forget, don't await)
     if (convId) appendMessage(convId, 'user', displayText);
 
+    // ── Smart File Response Logic ──────────────────────────
+    const generateSmartResponse = (file) => {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (['jpg', 'jpeg', 'png'].includes(ext)) {
+        return "I've received your image. Is there something specific you'd like me to look at or edit in this photo?";
+      }
+      if (ext === 'pdf') {
+        return "This PDF has been received. Would you like me to summarize the key points or look for specific information inside it?";
+      }
+      if (['doc', 'docx', 'txt'].includes(ext)) {
+        const name = file.name.toLowerCase();
+        if (name.includes('invoice') || name.includes('bill')) {
+          return "This looks like an invoice or billing document. Do you have a question about the total or the line items?";
+        }
+        return "I've captured your document. Mention any specific sections you'd like me to analyze for you.";
+      }
+      return "File received! How can I help you with this attachment?";
+    };
+
     try {
-      // ── Build Context-Aware Body ──────────────────────────
-      // Pass the last few messages to the backend for context
+      let fileData = null;
+      
+      // 1. If there's a file, upload it first
+      if (fileToSend) {
+        const formData = new FormData();
+        formData.append('file', fileToSend);
+        
+        try {
+          const uploadRes = await fetch('http://localhost:5000/api/upload', {
+            method: 'POST',
+            body: formData
+          });
+          if (uploadRes.ok) {
+            fileData = await uploadRes.json();
+            console.log("File Uploaded Success:", fileData);
+          }
+        } catch (uploadErr) {
+          console.error("Upload failed, falling back to text-only:", uploadErr);
+        }
+      }
+
+      // If it's JUST a file upload with no text, generate the smart repo immediately
+      if (fileToSend && !userMessage) {
+        setTimeout(() => {
+          setIsTyping(false);
+          const smartReply = generateSmartResponse(fileToSend);
+          const botId = Date.now() + 1;
+          setMessages(p => [...p, {
+            id: botId,
+            text: smartReply,
+            isBot: true,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          }]);
+          if (convId) appendMessage(convId, 'bot', smartReply);
+        }, 1200);
+        return;
+      }
+
+      // ── Standard AI Call (if text exists) ──────────────────
+      // ── Standard AI Call (if text exists) ──────────────────
       const chatHistory = messages.slice(-5).map(m => ({ 
         sender: m.isBot ? 'bot' : 'user', 
         text: m.text 
       }));
 
-      let bodyData;
-      let headers = {};
-      
-      if (fileToSend) {
-        const formData = new FormData();
-        formData.append('message', userMessage);
-        formData.append('file', fileToSend);
-        formData.append('history', JSON.stringify(chatHistory));
-        bodyData = formData;
-      } else {
-        bodyData = JSON.stringify({ 
-          message: userMessage,
-          history: chatHistory
-        });
-        headers['Content-Type'] = 'application/json';
-      }
-
+      // 🔥 FIXED: Always send JSON to /api/chat. 
+      // The file was already uploaded to /api/upload.
       const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
-        headers,
-        body: bodyData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: userMessage,
+          history: chatHistory,
+          // Send metadata about the file we just uploaded
+          fileContext: fileData 
+        }),
       });
+
+      if (!response.ok) throw new Error("Chat Service Unreachable");
+
       const data = await response.json();
       setIsTyping(false);
       const botId = Date.now() + 1;
@@ -524,6 +575,40 @@ const ChatContainer = () => {
       <footer
         className="px-5 pt-3 pb-3 flex-shrink-0 relative bg-chat-footer z-10"
       >
+        {selectedFile && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute bottom-full left-0 right-0 px-6 py-2 flex items-center justify-between"
+            style={{ 
+              background: 'rgba(30,41,59,0.95)', 
+              backdropFilter: 'blur(16px)',
+              borderTop: '1px solid rgba(59,130,246,0.3)',
+              borderBottom: '1px solid rgba(59,130,246,0.3)'
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                <File className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold text-slate-200 truncate max-w-[200px]">
+                  {selectedFile.name}
+                </span>
+                <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">
+                  {(selectedFile.size / 1024).toFixed(1)} KB · Ready to send
+                </span>
+              </div>
+            </div>
+            <button 
+              onClick={() => setSelectedFile(null)} 
+              className="text-[#94A3B8] hover:text-[#EF4444] transition-colors p-1"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+
         <AnimatePresence>
           {suggestions.length > 0 && (
             <motion.div 
@@ -561,27 +646,6 @@ const ChatContainer = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {selectedFile && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="flex items-center justify-between mb-3 p-2 rounded-lg" 
-            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
-          >
-            <div className="flex items-center gap-2 overflow-hidden px-2">
-              <File className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
-              <span className="text-sm font-medium truncate" style={{ color: '#E2E8F0' }}>{selectedFile.name}</span>
-            </div>
-            <button 
-              onClick={() => setSelectedFile(null)} 
-              className="text-[#94A3B8] hover:text-[#EF4444] transition-colors p-1"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </motion.div>
-        )}
 
         <motion.div
           className={`flex items-center gap-2 px-3 py-1.5 rounded-lg mb-2 transition-colors bg-chat-input-wrapper ${inputFocused ? 'ring-1 ring-blue-500/60' : ''}`}
