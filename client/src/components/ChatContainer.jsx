@@ -331,13 +331,7 @@ const ChatContainer = () => {
 
       {/* ── HEADER ─────────────────────────────────────────── */}
       <header
-        className="px-6 py-4 flex items-center justify-between flex-shrink-0 relative"
-        style={{
-          background: 'rgba(6,11,24,0.95)',
-          borderBottom: '1px solid rgba(30,45,71,0.7)',
-          backdropFilter: 'blur(24px)',
-          zIndex: 10,
-        }}
+        className="px-6 py-4 flex items-center justify-between flex-shrink-0 relative bg-chat-header z-10"
       >
         {/* Left: Bot info */}
         <div className="flex items-center gap-3.5">
@@ -357,7 +351,7 @@ const ChatContainer = () => {
           </motion.div>
 
           <div>
-            <h2 className="font-bold text-[13px] flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+            <h2 className="font-bold text-[13px] flex items-center gap-2 text-theme-primary">
               {settings.chatbotName || 'SupportSense Assistant'}
               <motion.span
                 animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
@@ -406,8 +400,7 @@ const ChatContainer = () => {
         <div className="flex items-center gap-3 my-4">
           <div className="flex-1 h-px" style={{ background: 'rgba(30,45,71,0.5)' }} />
           <span
-            className="text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full"
-            style={{ background: 'rgba(13,21,38,0.7)', color: '#475569', border: '1px solid rgba(30,45,71,0.5)' }}
+            className="text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-chat-date"
           >
             Today
           </span>
@@ -450,13 +443,7 @@ const ChatContainer = () => {
 
       {/* ── INPUT ──────────────────────────────────────────── */}
       <footer
-        className="px-5 pt-3 pb-3 flex-shrink-0 relative"
-        style={{
-          background: 'rgba(4,8,18,0.95)',
-          borderTop: '1px solid rgba(30,45,71,0.4)',
-          backdropFilter: 'blur(24px)',
-          zIndex: 10,
-        }}
+        className="px-5 pt-3 pb-3 flex-shrink-0 relative bg-chat-footer z-10"
       >
         {selectedFile && (
           <motion.div 
@@ -480,12 +467,7 @@ const ChatContainer = () => {
         )}
 
         <motion.div
-          animate={{
-            borderColor: inputFocused ? 'rgba(59,130,246,0.6)' : 'rgba(30,45,71,0.6)',
-          }}
-          transition={{ duration: 0.2 }}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg mb-2"
-          style={{ background: '#0F172A', border: '1px solid rgba(30,45,71,0.6)' }}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg mb-2 transition-colors bg-chat-input-wrapper ${inputFocused ? 'ring-1 ring-blue-500/60' : ''}`}
         >
           <input 
             type="file" 

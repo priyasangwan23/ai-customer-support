@@ -29,10 +29,15 @@ const Settings = () => {
   };
 
   const handleToggleTheme = () => {
-    setFormData(prev => ({
-      ...prev,
-      theme: prev.theme === 'dark' ? 'light' : 'dark'
-    }));
+    setFormData(prev => {
+      const newTheme = prev.theme === 'dark' ? 'light' : 'dark';
+      if (newTheme === 'light') {
+        document.documentElement.classList.add('theme-light');
+      } else {
+        document.documentElement.classList.remove('theme-light');
+      }
+      return { ...prev, theme: newTheme };
+    });
   };
 
   const handleSave = (e) => {
@@ -42,6 +47,7 @@ const Settings = () => {
     // Simulate API call using local state only
     setTimeout(() => {
       localStorage.setItem('chatSettings', JSON.stringify(formData));
+      window.dispatchEvent(new Event('settingsUpdated'));
       setIsSaving(false);
       setSaveSuccess(true);
       
@@ -53,7 +59,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative" style={{ background: '#0B1120' }}>
+    <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative bg-dashboard-settings">
       {/* Background ambient glow matching the main theme */}
         
       <header className="mb-10 z-10 relative">
@@ -81,8 +87,7 @@ const Settings = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-6 rounded-2xl"
-          style={{ background: '#111827', border: '1px solid #1F2937' }}
+          className="p-6 rounded-2xl bg-dashboard-card border border-dashboard-border"
         >
           <h2 className="text-lg font-bold text-gray-200 mb-6 flex items-center">
             <Bot className="mr-2 text-blue-400" size={20} /> Identity Settings
@@ -125,8 +130,7 @@ const Settings = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-6 rounded-2xl"
-          style={{ background: '#111827', border: '1px solid #1F2937' }}
+          className="p-6 rounded-2xl bg-dashboard-card border border-dashboard-border"
         >
           <h2 className="text-lg font-bold text-gray-200 mb-6 flex items-center">
             <Palette className="mr-2 text-blue-400" size={20} /> Interface & Tone
@@ -169,8 +173,7 @@ const Settings = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 rounded-2xl"
-          style={{ background: '#111827', border: '1px solid #1F2937' }}
+          className="p-6 rounded-2xl bg-dashboard-card border border-dashboard-border"
         >
           <h2 className="text-lg font-bold text-gray-200 mb-6 flex items-center">
             <MessageCircle className="mr-2 text-emerald-400" size={20} /> AI behavior

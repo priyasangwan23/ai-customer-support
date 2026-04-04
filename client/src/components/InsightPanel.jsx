@@ -73,9 +73,9 @@ const Section = ({ icon: Icon, label, children }) => (
     <div className="flex items-center gap-2">
       <div
         className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
-        style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(167,139,250,0.2)' }}
+        style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(96,165,250,0.2)' }}
       >
-        <Icon className="w-3 h-3" style={{ color: '#A78BFA' }} />
+        <Icon className="w-3 h-3" style={{ color: '#60A5FA' }} />
       </div>
       <span className="text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: '#475569' }}>
         {label}
@@ -96,17 +96,9 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
   const [sentiment, setSentiment]     = useState('Positive');
   const [confidence, setConfidence]   = useState(94.8);
   const [intent, setIntent]           = useState('Order Tracking');
-  const [sessionTime, setSessionTime] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => setSessionTime(t => t + 1), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   const handleReset = () => {
-    setSessionTime(0);
     setConfidence(94.8);
     setSentiment('Positive');
   };
@@ -118,9 +110,8 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
     <motion.aside
       animate={{ width: collapsed ? 0 : width, opacity: collapsed ? 0 : 1 }}
       transition={{ duration: isDragging ? 0 : 0.35, ease: [0.4, 0, 0.2, 1] }}
-      className="h-full flex flex-col gap-5 flex-shrink-0 relative overflow-y-auto overflow-x-hidden"
+      className="h-full flex flex-col gap-5 flex-shrink-0 relative overflow-y-auto overflow-x-hidden bg-dashboard-sidebar"
       style={{
-        background: 'linear-gradient(180deg, #060E1E 0%, #080F1E 100%)',
         borderLeft: '1px solid rgba(30,45,71,0.7)',
         padding: collapsed ? '0' : '24px 20px',
       }}
@@ -129,7 +120,7 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
       <div
         className="absolute top-12 right-2 w-44 h-44 rounded-full pointer-events-none animate-float"
         style={{
-          background: 'radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 70%)',
           willChange: 'transform',
           animationDelay: '1.2s',
         }}
@@ -141,8 +132,8 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center glow-ring"
             style={{
-              background: 'linear-gradient(135deg, #7C3AED, #9B4DFF)',
-              boxShadow: '0 0 16px rgba(124,58,237,0.4)',
+              background: 'linear-gradient(135deg, #2563EB, #3B82F6)',
+              boxShadow: '0 0 16px rgba(37,99,235,0.4)',
             }}
           >
             <Brain className="text-white w-4 h-4" />
@@ -159,23 +150,7 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
         </div>
       </div>
 
-      {/* Session Timer */}
-      <div
-        className="flex items-center justify-between px-4 py-3 rounded-2xl relative z-10 flex-shrink-0 glass-card"
-      >
-        <div className="flex items-center gap-2">
-          <Activity className="w-4 h-4" style={{ color: '#A78BFA' }} />
-          <span className="text-xs font-semibold" style={{ color: '#94A3B8' }}>Session Time</span>
-        </div>
-        <motion.span
-          key={sessionTime}
-          initial={{ opacity: 0.5 }}
-          animate={{ opacity: 1 }}
-          className="text-sm font-black tabular-nums gradient-text"
-        >
-          {formatTime(sessionTime)}
-        </motion.span>
-      </div>
+
 
       {/* Response Confidence */}
       <Section icon={TrendingUp} label="Response Confidence">
@@ -186,10 +161,10 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
             label="Accuracy"
             value={confidence}
             unit="%"
-            color="#A78BFA"
+            color="#60A5FA"
             icon={CheckCircle}
           />
-          <AnimatedBar value={confidence} color="linear-gradient(90deg, #7C3AED, #A78BFA)" delay={0} />
+          <AnimatedBar value={confidence} color="linear-gradient(90deg, #2563EB, #60A5FA)" delay={0} />
           <LiveMetric
             label="Latency"
             value={210}
@@ -255,7 +230,7 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
           {[
             { label: 'Aggression', pct: 5,  color: 'linear-gradient(90deg, #EF4444, #F87171)', icon: AlertTriangle },
             { label: 'Frustration', pct: 12, color: 'linear-gradient(90deg, #F59E0B, #FCD34D)', icon: Frown },
-            { label: 'Urgency',     pct: 28, color: 'linear-gradient(90deg, #7C3AED, #A78BFA)', icon: Zap },
+            { label: 'Urgency',     pct: 28, color: 'linear-gradient(90deg, #2563EB, #60A5FA)', icon: Zap },
           ].map((s, i) => (
             <div key={s.label}>
               <div className="flex justify-between text-[11px] mb-1.5">
@@ -284,10 +259,10 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
             <span
               className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase"
               style={{
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(167,139,250,0.1))',
-                color: '#A78BFA',
-                border: '1px solid rgba(167,139,250,0.25)',
-                boxShadow: '0 0 10px rgba(124,58,237,0.2)',
+                background: 'linear-gradient(135deg, rgba(37,99,235,0.2), rgba(96,165,250,0.1))',
+                color: '#60A5FA',
+                border: '1px solid rgba(96,165,250,0.25)',
+                boxShadow: '0 0 10px rgba(37,99,235,0.2)',
               }}
             >
               High
@@ -316,9 +291,9 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
           transition={{ type: 'spring', stiffness: 350, damping: 18 }}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest btn-ghost"
           style={{
-            background: 'rgba(124,58,237,0.08)',
-            border: '1px solid rgba(167,139,250,0.2)',
-            color: '#A78BFA',
+            background: 'rgba(37,99,235,0.08)',
+            border: '1px solid rgba(96,165,250,0.2)',
+            color: '#60A5FA',
             willChange: 'transform',
           }}
         >

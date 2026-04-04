@@ -18,15 +18,14 @@ const StatCard = ({ title, value, icon: Icon, trend, colorClass }) => (
     animate={{ opacity: 1, y: 0 }}
     whileHover={{ y: -4, scale: 1.02 }}
     transition={{ type: "spring", stiffness: 300 }}
-    className="flex flex-col p-6 rounded-2xl relative overflow-hidden"
-    style={{ background: '#111827', border: '1px solid #1F2937' }}
+    className="flex flex-col p-6 rounded-2xl relative overflow-hidden bg-dashboard-card border border-dashboard-border"
   >
     <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
       <Icon size={80} />
     </div>
     
     <div className="flex justify-between items-start mb-4">
-      <div className={`p-3 rounded-xl ${colorClass}`} style={{ background: 'rgba(17, 24, 39, 0.5)', backdropFilter: 'blur(10px)' }}>
+      <div className={`p-3 rounded-xl bg-dashboard-icon-bg backdrop-blur-md ${colorClass}`}>
         <Icon size={22} />
       </div>
       {trend && (
@@ -48,7 +47,7 @@ const StatCard = ({ title, value, icon: Icon, trend, colorClass }) => (
 
 const Analytics = () => {
   return (
-    <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative" style={{ background: '#0B1120' }}>
+    <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative bg-dashboard-settings">
       {/* Background ambient glow removed for clean SaaS theme */}
         
       <header className="mb-10 z-10 relative">

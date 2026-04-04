@@ -10,7 +10,7 @@ import { useChatHistory } from '../context/ChatContext';
 
 const menuItems = [
   { name: 'Main Dashboard', icon: LayoutDashboard, path: '/dashboard', badge: null },
-  { name: 'Live Chat',      icon: MessageSquare,   path: '/',           badge: '3' },
+  { name: 'Live Chat',      icon: MessageSquare,   path: '/',           badge: null },
   { name: 'Analytics',      icon: BarChart2,       path: '/analytics',  badge: null },
   { name: 'Settings',       icon: Settings,        path: '/settings',   badge: null },
 ];
@@ -52,9 +52,8 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
     <motion.aside
       animate={{ width: collapsed ? 72 : width }}
       transition={{ duration: isDragging ? 0 : 0.35, ease: [0.4, 0, 0.2, 1] }}
-      className="h-full flex flex-col flex-shrink-0 relative overflow-hidden"
+      className={`h-full flex flex-col flex-shrink-0 relative overflow-hidden bg-dashboard-sidebar`}
       style={{
-        background: 'linear-gradient(180deg, #060E1E 0%, #080F1E 60%, #060B18 100%)',
         borderRight: '1px solid rgba(30, 45, 71, 0.7)',
       }}
     >
@@ -63,13 +62,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
         <motion.div
           whileHover={{ scale: 1.1, rotate: 3 }}
           transition={{ type: 'spring', stiffness: 320, damping: 15 }}
-          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{
-            background: 'rgba(15, 23, 42, 1)',
-            border: '1px solid rgba(51, 65, 85, 0.8)',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-            willChange: 'transform',
-          }}
+          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-dashboard-sidebar-logo"
         >
           <BrandLogo className="w-9 h-9" />
         </motion.div>
@@ -109,12 +102,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.07, type: 'spring', stiffness: 260, damping: 22 }}
                 whileHover={{ x: collapsed ? 0 : 3 }}
-                className={`flex items-center gap-3 rounded-xl text-sm font-semibold cursor-pointer relative overflow-hidden group ${collapsed ? 'justify-center p-3' : 'px-3 py-2.5'}`}
-                style={
-                  isActive
-                    ? { background: 'rgba(59,130,246,0.1)', border: '1px solid transparent', color: '#3B82F6' }
-                    : { background: 'transparent', border: '1px solid transparent', color: '#64748B' }
-                }
+                className={`flex items-center gap-3 rounded-xl text-sm font-semibold cursor-pointer relative overflow-hidden group sidebar-nav-item ${collapsed ? 'justify-center p-3' : 'px-3 py-2.5'} ${isActive ? 'active' : ''}`}
               >
                 {isActive && !collapsed && (
                   <motion.div
@@ -172,8 +160,8 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
             {/* Header */}
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
               <div className="flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5" style={{ color: '#475569' }} />
-                <p className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: '#475569' }}>
+                <Clock className="w-3.5 h-3.5 text-slate-500" />
+                <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-500">
                   Recent Chats
                 </p>
                 {useDummy && (
@@ -207,9 +195,9 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                 </div>
               ) : conversations.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <MessageSquare className="w-8 h-8 mb-2" style={{ color: '#1E2D47' }} />
-                  <p className="text-xs" style={{ color: '#475569' }}>No chats yet</p>
-                  <p className="text-[10px] mt-1" style={{ color: '#334155' }}>Start a new conversation</p>
+                  <MessageSquare className="w-8 h-8 mb-2 text-slate-800" />
+                  <p className="text-xs text-slate-500">No chats yet</p>
+                  <p className="text-[10px] mt-1 text-slate-600">Start a new conversation</p>
                 </div>
               ) : (
                 conversations.map((conv) => {
@@ -218,11 +206,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                     <motion.div
                       key={conv._id}
                       whileHover={{ x: 2 }}
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer group relative"
-                      style={{
-                        background: isActive ? 'rgba(59,130,246,0.1)' : 'transparent',
-                        border: `1px solid ${isActive ? 'rgba(59,130,246,0.2)' : 'transparent'}`,
-                      }}
+                      className={`flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer group relative sidebar-history-item ${isActive ? 'active' : ''}`}
                       onClick={() => handleSelectConversation(conv._id)}
                     >
                       {isActive && (
@@ -233,12 +217,11 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                       )}
                       <div className="flex-1 min-w-0">
                         <p
-                          className="text-xs font-semibold truncate"
-                          style={{ color: isActive ? '#60A5FA' : '#94A3B8' }}
+                          className={`text-xs font-semibold truncate ${isActive ? 'text-blue-400' : 'text-slate-400'}`}
                         >
                           {conv.title}
                         </p>
-                        <p className="text-[9px] mt-0.5" style={{ color: '#475569' }}>
+                        <p className="text-[9px] mt-0.5 text-slate-500">
                           {formatRelativeTime(conv.updatedAt)}
                         </p>
                       </div>
@@ -268,8 +251,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleNewChat}
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-500"
             title="New Chat"
           >
             <Plus className="w-4 h-4" />

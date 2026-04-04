@@ -201,7 +201,7 @@ body { margin: 0; min-height: 100vh; background: #060B18; }
 }
 
 .gradient-text-neon {
-  background: linear-gradient(90deg, #C4B5FD, #A78BFA, #06B6D4);
+  background: linear-gradient(90deg, #93C5FD, #60A5FA, #06B6D4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -216,7 +216,7 @@ body { margin: 0; min-height: 100vh; background: #060B18; }
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #7C3AED, #A78BFA, #6D28D9);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA, #2563EB);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: -1;
@@ -298,6 +298,183 @@ body { margin: 0; min-height: 100vh; background: #060B18; }
 /* ─── Typing indicator ──────────────────────────────────── */
 .typing-dot {
   animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+/* Structural Component Backgrounds */
+.bg-dashboard-settings { background: #0B1120; }
+.bg-dashboard-main { background: #040812; }
+.bg-dashboard-chat { background: rgba(15, 23, 42, 0.95); }
+.bg-dashboard-sidebar { background: linear-gradient(180deg, #060E1E 0%, #080F1E 100%); }
+.bg-dashboard-card { background: #111827; }
+.border-dashboard-border { border-color: #1F2937; }
+.bg-dashboard-icon-bg { background: rgba(17, 24, 39, 0.5); }
+.bg-dashboard-sidebar-logo { background: rgba(15, 23, 42, 1); border: 1px solid rgba(51, 65, 85, 0.8); }
+
+.sidebar-nav-item, .sidebar-history-item {
+  background: transparent;
+  color: #64748B;
+  border: 1px solid transparent;
+}
+.sidebar-nav-item:hover, .sidebar-history-item:hover {
+  background: rgba(30,45,71,0.4);
+}
+.sidebar-nav-item.active, .sidebar-history-item.active {
+  background: rgba(59,130,246,0.1);
+  color: #3B82F6;
+}
+.sidebar-history-item.active {
+  border-color: rgba(59,130,246,0.2);
+}
+
+.quick-action-btn {
+  background: rgba(13,21,38,0.8);
+  border: 1px solid rgba(30,45,71,0.8);
+  color: #64748B;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+/* ─── Light Mode Support (Stable Overrides) ─── */
+html.theme-light, html.theme-light body {
+  background-color: #F8FAFC !important;
+  background: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.theme-light .bg-dashboard-sidebar-logo {
+  background: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+html.theme-light .quick-action-btn {
+  background: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03) !important;
+}
+
+html.theme-light .sidebar-nav-item:hover,
+html.theme-light .sidebar-history-item:hover {
+  background: #F1F5F9 !important;
+}
+
+html.theme-light .sidebar-nav-item.active,
+html.theme-light .sidebar-history-item.active {
+  background: #EFF6FF !important;
+}
+
+html.theme-light .sidebar-history-item.active {
+  border-color: #DBEAFE !important;
+}
+
+html.theme-light .bg-dashboard-main,
+html.theme-light .bg-dashboard-settings {
+  background: #F8FAFC !important;
+}
+
+html.theme-light .bg-dashboard-chat,
+html.theme-light .bg-dashboard-sidebar,
+html.theme-light aside {
+  background: #FFFFFF !important;
+}
+
+html.theme-light .bg-dashboard-chat {
+  border-color: rgba(0,0,0,0.05) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06) !important;
+}
+
+html.theme-light .bg-dashboard-card {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+html.theme-light .border-dashboard-border {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+html.theme-light .bg-dashboard-icon-bg {
+  background: #F1F5F9 !important;
+}
+
+html.theme-light .glass,
+html.theme-light .glass-dark,
+html.theme-light .glass-card,
+html.theme-light .glass-purple {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.theme-light aside {
+  background: #FFFFFF !important;
+  border-right-color: rgba(0,0,0,0.08) !important;
+  border-left-color: rgba(0,0,0,0.08) !important;
+}
+
+html.theme-light .bubble-ai {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.theme-light .bubble-user {
+  color: #FFFFFF !important; 
+}
+
+/* Text overrides */
+html.theme-light .text-white, 
+html.theme-light [class*="text-slate-100"],
+html.theme-light [class*="text-slate-200"],
+html.theme-light [class*="text-slate-300"],
+html.theme-light [style*="color: #F1F5F9"] {
+  color: #0F172A !important;
+}
+
+html.theme-light [class*="text-slate-400"],
+html.theme-light [class*="text-gray-400"],
+html.theme-light [style*="color: #94A3B8"] {
+  color: #475569 !important;
+}
+
+html.theme-light [class*="text-slate-500"],
+html.theme-light [class*="text-gray-500"],
+html.theme-light [style*="color: #475569"] {
+  color: #64748B !important;
+}
+
+html.theme-light [class*="text-slate-600"],
+html.theme-light [class*="text-slate-800"] {
+  color: #94A3B8 !important;
+}
+
+/* Settings Form specifics */
+html.theme-light input[type="text"], 
+html.theme-light input[type="email"], 
+html.theme-light select {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.theme-light [class*="bg-[#0D1526]"] {
+  background-color: #F8FAFC !important;
+  color: #64748B !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.theme-light .border-gray-700 {
+  border-color: #E2E8F0 !important;
+}
+
+html.theme-light [style*="background: rgba(13,21,38,0.8)"] {
+  background: #FFFFFF !important;
+}
+
+html.theme-light [class*="bg-gray-800"] {
+  background-color: transparent !important;
+}
+
+html.theme-light label {
+  color: #475569 !important;
 }
 
 /* ─── Avatar pulse ──────────────────────────────────────── */

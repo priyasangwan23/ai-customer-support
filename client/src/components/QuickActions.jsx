@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Truck, RotateCcw, User, HelpCircle, Package, CreditCard } from 'lucide-react';
 
 const actions = [
-  { label: 'Track Order',   icon: Truck,       text: 'Where is my order?',          color: '#A78BFA' },
+  { label: 'Track Order',   icon: Truck,       text: 'Where is my order?',          color: '#3B82F6' },
   { label: 'Return Items',  icon: RotateCcw,   text: 'I want to return an item.',   color: '#60A5FA' },
   { label: 'Talk to Agent', icon: User,        text: 'Connect me to a human agent.', color: '#10B981' },
   { label: 'Help Center',   icon: HelpCircle,  text: 'Show me the help center.',    color: '#F59E0B' },
@@ -26,22 +26,16 @@ const QuickActions = ({ onAction }) => (
           transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -3, scale: 1.04 }}
           whileTap={{ scale: 0.94 }}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold relative overflow-hidden group"
-          style={{
-            background: 'rgba(13,21,38,0.8)',
-            border: '1px solid rgba(30,45,71,0.8)',
-            color: '#64748B',
-            transition: 'border-color 0.2s ease, color 0.2s ease',
-          }}
+          className="quick-action-btn flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold relative overflow-hidden group"
           onMouseEnter={e => {
             e.currentTarget.style.color = action.color;
             e.currentTarget.style.borderColor = `${action.color}40`;
             e.currentTarget.style.background = `${action.color}08`;
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.color = '#64748B';
-            e.currentTarget.style.borderColor = 'rgba(30,45,71,0.8)';
-            e.currentTarget.style.background = 'rgba(13,21,38,0.8)';
+            e.currentTarget.style.color = '';
+            e.currentTarget.style.borderColor = '';
+            e.currentTarget.style.background = '';
           }}
         >
           <action.icon className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
