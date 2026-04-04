@@ -40,6 +40,12 @@ export const ChatProvider = ({ children }) => {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [isLoadingHistory, setIsLoadingHistory]          = useState(true);
   const [useDummy, setUseDummy]                          = useState(false);
+  const [insights, setInsights]                          = useState({
+    sentiment: 'Neutral',
+    intent: 'Scanning...',
+    suggestedAction: 'Wait for user input',
+    confidence: 94.2
+  });
 
   // Mirror conversations in a ref so callbacks don't need it as a dep
   const conversationsRef = useRef([]);
@@ -206,6 +212,8 @@ export const ChatProvider = ({ children }) => {
       getConversationMessages,
       deleteConversation,
       refetchConversations: fetchConversations,
+      insights,
+      setInsights,
     }}>
       {children}
     </ChatContext.Provider>

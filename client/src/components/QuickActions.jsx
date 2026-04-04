@@ -1,14 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Truck, RotateCcw, User, HelpCircle, Package, CreditCard } from 'lucide-react';
+import { 
+  Truck, RotateCcw, User, HelpCircle, Package, CreditCard, 
+  Search, Ban, MapPin, MessageSquare, BookOpen, ShieldCheck 
+} from 'lucide-react';
 
 const actions = [
-  { label: 'Track Order',   icon: Truck,       text: 'Where is my order?',          color: '#3B82F6' },
-  { label: 'Return Items',  icon: RotateCcw,   text: 'I want to return an item.',   color: '#60A5FA' },
-  { label: 'Talk to Agent', icon: User,        text: 'Connect me to a human agent.', color: '#10B981' },
-  { label: 'Help Center',   icon: HelpCircle,  text: 'Show me the help center.',    color: '#F59E0B' },
-  { label: 'Check Billing', icon: CreditCard,  text: 'I have a billing question.',  color: '#F472B6' },
-  { label: 'Order Status',  icon: Package,     text: 'What is my order status?',    color: '#34D399' },
+  { label: 'Track Order',   icon: Truck,         text: 'Where is my order?',          color: '#3B82F6' },
+  { label: 'Return Items',  icon: RotateCcw,     text: 'I want to return an item.',   color: '#60A5FA' },
+  { label: 'Product Search',icon: Search,        text: 'Show me your latest products.',color: '#F59E0B' },
+  { label: 'Talk to Agent', icon: User,          text: 'Connect me to a human agent.', color: '#10B981' },
+  { label: 'Check Billing', icon: CreditCard,    text: 'I have a billing question.',  color: '#F472B6' },
+  { label: 'Cancel Sub',    icon: Ban,           text: 'How can I cancel my subscription?', color: '#EF4444' },
+  { label: 'Order Status',  icon: Package,       text: 'What is my order status?',    color: '#34D399' },
+  { label: 'Update Address',icon: MapPin,        text: 'I need to change my delivery address.', color: '#8B5CF6' },
+  { label: 'Feedback',      icon: MessageSquare, text: 'I want to leave feedback.',   color: '#D4D4D8' },
+  { label: 'Help Center',   icon: HelpCircle,    text: 'Show me the help center.',    color: '#FBBF24' },
+  { label: 'Security',      icon: ShieldCheck,   text: 'Is my account secure?',       color: '#0EA5E9' },
+  { label: 'Store FAQ',     icon: BookOpen,      text: 'Show me the common FAQs.',    color: '#EC4899' },
 ];
 
 const QuickActions = ({ onAction }) => (

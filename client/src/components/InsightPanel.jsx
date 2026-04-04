@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Smile, Shield, Layers, RefreshCw, TrendingUp,
-  Frown, Meh, Activity, Zap, Brain, CheckCircle, AlertTriangle
+  Frown, Meh, Activity, Zap, Brain, CheckCircle, AlertTriangle,
+  Trash2
 } from 'lucide-react';
+import { useChatHistory } from '../context/ChatContext';
+import { useNavigate } from 'react-router-dom';
 
 /* ─── Animated Progress Bar ─────────────────────────────── */
 const AnimatedBar = ({ value, color, delay = 0, height = 6 }) => {
@@ -93,14 +96,39 @@ const sentimentConfig = {
 };
 
 const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) => {
-  const [sentiment, setSentiment]     = useState('Positive');
-  const [confidence, setConfidence]   = useState(94.8);
-  const [intent, setIntent]           = useState('Order Tracking');
+  const { insights, setInsights, appendMessage, activeConversationId } = useChatHistory();
+  const navigate = useNavigate();
+  
+  const sentiment = insights?.sentiment || 'Neutral';
+  const confidence = parseFloat(insights?.confidence || 94.2);
+  const intent = insights?.intent || 'General Query';
+  const suggestedAction = insights?.suggestedAction || 'Assist user';
 
 
   const handleReset = () => {
-    setConfidence(94.8);
-    setSentiment('Positive');
+    if (setInsights) {
+      setInsights({
+        sentiment: 'Neutral',
+        intent: 'Scanning...',
+        suggestedAction: 'Wait for user input',
+        confidence: 94.2
+      });
+    }
+  };
+
+  const handleExecuteDirective = async () => {
+    if (!suggestedAction || !activeConversationId) return;
+
+    // ── 1. Update Chat History with protocol message
+    if (appendMessage) {
+      await appendMessage(activeConversationId, 'bot', `[PROTOCOL INITIATED]: Executing directive "${suggestedAction.toUpperCase()}". Please stand by for automated results.`);
+    }
+
+    // ── 2. Special Logic: Navigate to Marketplace if action is search/product related
+    const actionLower = suggestedAction.toLowerCase();
+    if (actionLower.includes('search') || actionLower.includes('product') || actionLower.includes('marketplace')) {
+      navigate('/dashboard');
+    }
   };
 
   const sConf = sentimentConfig[sentiment] || sentimentConfig.Positive;
@@ -206,7 +234,7 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
             return (
               <motion.button
                 key={key}
-                onClick={() => setSentiment(key)}
+                onClick={() => setInsights?.({ ...insights, sentiment: key })}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 className="flex-1 py-1.5 rounded-xl text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all"
@@ -279,6 +307,23 @@ const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) =>
               </span>
             ))}
           </div>
+        </div>
+      </Section>
+
+      {/* Suggested Trajectory */}
+      <Section icon={Zap} label="AI Trajectory">
+        <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 relative overflow-hidden group z-10">
+          <p className="text-[9px] font-black uppercase tracking-widest text-blue-300 mb-2 opacity-80">RECOMMENDED PROTOCOL</p>
+          <h4 className="text-xs font-black tracking-tight text-white mb-4 uppercase">{suggestedAction}</h4>
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleExecuteDirective}
+            className="w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20 transition-all border border-blue-400/20"
+          >
+            Execute Directive
+          </motion.button>
+          <Sparkles className="absolute top-[-10px] right-[-10px] w-16 h-16 text-blue-500/10 -rotate-12 group-hover:scale-125 transition-transform" />
         </div>
       </Section>
 

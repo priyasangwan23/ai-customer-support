@@ -8,6 +8,7 @@ const chatRoutes = require('./routes/chat');
 const faqRoutes = require('./routes/faq');
 const historyRoutes = require('./routes/history');
 const uploadRoutes = require('./routes/upload');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/faq', faqRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;

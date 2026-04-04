@@ -35,9 +35,12 @@ router.post('/', async (req, res) => {
 
     // PHASE 2: Fallback to AI Service for context-aware response
     console.log(`[Chat API] No FAQ match — generating AI fallback for: "${normalizedMessage}"`);
-    const aiAnswer = await aiService.generateResponse(normalizedMessage, chatHistory, fileContext);
+    const { reply, insights } = await aiService.generateResponse(normalizedMessage, chatHistory, fileContext);
     
-    return res.json({ reply: aiAnswer });
+    return res.json({ 
+      reply, 
+      insights: insights || { sentiment: 'Neutral', intent: 'FAQ Query', suggestedAction: 'Assist user' } 
+    });
 
   } catch (error) {
     console.error('[Chat API] Critical Error:', error.stack);

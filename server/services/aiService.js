@@ -68,24 +68,40 @@ class AIService {
 
       console.log(`[AI] Calling Gemini 1.5 Flash for: ${message}`);
 
-      const result = await chat.sendMessage(finalPrompt);
-      const response = await result.response;
-      const reply = response.text().trim();
+      // 🔥 ENHANCED PROMPT: Ask for the reply AND analysis tags
+      const enhancedPrompt = `${finalPrompt}\n\n[INSTRUCTION: After your reply, on a new line, provide analysis in this format: <ANALYSIS> Sentiment: (Positive|Neutral|Negative) | Intent: (Short Intent Category) | Action: (1-step suggested action) </ANALYSIS>]`;
 
-      return reply || "I couldn't generate a response. Please try a different question.";
+      const result = await chat.sendMessage(enhancedPrompt);
+      const response = await result.response;
+      const rawText = response.text().trim();
+
+      // Parse result
+      let reply = rawText;
+      let insights = { sentiment: 'Neutral', intent: 'General Query', suggestedAction: 'Assist user' };
+
+      const analysisMatch = rawText.match(/<ANALYSIS>(.*?)<\/ANALYSIS>/s);
+      if (analysisMatch) {
+        reply = rawText.replace(/<ANALYSIS>.*?<\/ANALYSIS>/s, '').trim();
+        const tags = analysisMatch[1].trim().split('|');
+        tags.forEach(tag => {
+          const [key, val] = tag.split(':').map(s => s.trim());
+          if (key === 'Sentiment') insights.sentiment = val;
+          if (key === 'Intent') insights.intent = val;
+          if (key === 'Action') insights.suggestedAction = val;
+        });
+      }
+
+      return { reply, insights };
 
     } catch (error) {
       console.error("AI Error:", error.message);
-
-      // Handle Quota/Rate Limit Errors specifically
-      if (error.message.includes('429')) {
-        return "The daily free limit for this AI key is reached. Please try again in an hour or switch to Groq.";
-      }
-      if (error.message.includes('role')) {
-        return "Internal Error: Chat history must start with a user message.";
-      }
+      let errReply = "Service currently unavailable.";
+      if (error.message.includes('429')) errReply = "Free quota reached.";
       
-      return "Service currently unavailable. Please try again later.";
+      return { 
+        reply: errReply, 
+        insights: { sentiment: 'Neutral', intent: 'Error Handle', suggestedAction: 'Retry' } 
+      };
     }
   }
 
