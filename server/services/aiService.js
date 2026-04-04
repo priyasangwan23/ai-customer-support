@@ -28,58 +28,54 @@ class AIService {
       // 🚀 1. SETUP MODEL
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash", 
-        systemInstruction: {
-          role: "system",
-          parts: [{ 
-            text: "You are a Senior Support Specialist. Provide detailed, step-by-step solutions with bullet points. Be professional and comprehensive." 
-          }]
-        },
-        generationConfig: {
-          maxOutputTokens: 1200,
-          temperature: 0.7,
-        },
+        generationConfig: { maxOutputTokens: 800, temperature: 0.7 },
         safetySettings: [
-          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
-          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+          { category: HarmCategory.HARM_BLOCK_THRESHOLD_UNSPECIFIED, threshold: HarmBlockThreshold.BLOCK_NONE },
         ],
       });
 
-      // 🔄 2. FORMAT HISTORY (Role validation)
-      let formattedHistory = history.map(msg => ({
+      // 🔄 2. FORMAT HISTORY
+      let formattedHistory = history.slice(-4).map(msg => ({
         role: msg.sender === 'bot' ? 'model' : 'user',
         parts: [{ text: String(msg.text) }],
       }));
 
-      // 🔥 FIX: Remove any bot messages from the start of the list
+      // Role order validation
       while (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
         formattedHistory.shift(); 
       }
 
-      // Limit context to save tokens/quota
-      formattedHistory = formattedHistory.slice(-4);
+      // 🧠 3. CALL WITH RETRY
+      let rawText = "";
+      let attempts = 0;
+      const MAX_ATTEMPTS = 2;
 
-      // 🧠 3. START CHAT
-      const chat = model.startChat({ history: formattedHistory || [] });
-      
-      let finalPrompt = message;
-      if (fileContext) {
-        finalPrompt = `[User attached: ${fileContext.fileName}]. ${message}`;
+      while (attempts < MAX_ATTEMPTS) {
+        try {
+          const chat = model.startChat({ history: formattedHistory || [] });
+          const enhancedPrompt = `${message}\n\n[ANALYSIS: <ANALYSIS> Sentiment: ... | Intent: ... | Action: ... </ANALYSIS>]`;
+          
+          console.log(`[AI-NODE] Transmitting... (Attempt ${attempts + 1})`);
+          
+          const result = await chat.sendMessage(enhancedPrompt);
+          const response = await result.response;
+          
+          if (response && response.text) {
+             rawText = response.text().trim();
+             if (rawText) break; // Success!
+          }
+        } catch (attemptErr) {
+          attempts++;
+          console.warn(`[AI-STUTTER] Attempt ${attempts} failed:`, attemptErr.message);
+          if (attempts >= MAX_ATTEMPTS) throw attemptErr;
+          await new Promise(r => setTimeout(r, 2000)); // Delay before retry
+        }
       }
 
-      const enhancedPrompt = `${finalPrompt}\n\n[ANALYSIS FORMAT: <ANALYSIS> Sentiment: ... | Intent: ... | Action: ... </ANALYSIS>]`;
-
-      console.log(`[AI-TRANSCEIVER] Transmitting to Gemini 1.5...`);
-      
-      const result = await chat.sendMessage(enhancedPrompt);
-      const response = await result.response;
-      
-      if (!response || !response.text) {
-        throw new Error("AI returned an empty or invalid response object.");
-      }
-
-      const rawText = response.text().trim();
+      if (!rawText) throw new Error("Empty AI Response after retries");
 
       // Parse result
       let reply = rawText;
@@ -104,11 +100,11 @@ class AIService {
       return { reply, insights };
 
     } catch (error) {
-      console.error("🔥 [AI-CRITICAL-ERROR]:", error);
+      console.error("🔥 [AI-CORE-CRITICAL]:", error);
       
-      let errReply = "My intelligence circuits are experiencing a throughput delay. Please try again in 30 seconds.";
-      if (error.message.includes('429')) errReply = "API Overloaded. Switching to backup nodes... please wait.";
-      if (error.message.includes('key')) errReply = "Configuration error: System API Key invalid/missing.";
+      let errReply = "My intelligence circuits are experiencing a brief delay. Please try again in 30 seconds.";
+      if (error.message.includes('429')) errReply = "System over-capacity. Polling backup nodes... please wait.";
+      if (error.message.includes('key')) errReply = "Security Protocol error: API Key missing/invalid on backend.";
       
       return { 
         reply: errReply, 
