@@ -8,6 +8,7 @@ import InsightPanel from '../components/InsightPanel';
 import Analytics from './Analytics';
 import Settings from './Settings';
 import ControlCenter from './ControlCenter';
+import { ChatProvider } from '../context/ChatContext';
 
 const ResizableDivider = ({ onMouseDown, collapsed, onToggle, isLeft }) => (
   <div 
@@ -68,63 +69,65 @@ const Dashboard = () => {
   }, [dragging, handleMouseMove, handleMouseUp]);
 
   return (
-    <div className={`flex h-screen w-full overflow-hidden ${dragging ? 'select-none' : ''}`} style={{ background: '#040812' }}>
-      
-      <Sidebar 
-        width={sidebarW} 
-        collapsed={sidebarCollapsed} 
-        setCollapsed={setSidebarCollapsed} 
-        isDragging={dragging === 'left'}
-      />
+    <ChatProvider>
+      <div className={`flex h-screen w-full overflow-hidden ${dragging ? 'select-none' : ''}`} style={{ background: '#040812' }}>
+        
+        <Sidebar 
+          width={sidebarW} 
+          collapsed={sidebarCollapsed} 
+          setCollapsed={setSidebarCollapsed} 
+          isDragging={dragging === 'left'}
+        />
 
-      <ResizableDivider 
-        onMouseDown={() => setDragging('left')} 
-        collapsed={sidebarCollapsed} 
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        isLeft={true} 
-      />
+        <ResizableDivider 
+          onMouseDown={() => setDragging('left')} 
+          collapsed={sidebarCollapsed} 
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+          isLeft={true} 
+        />
 
-      <main className="flex-1 min-w-0 h-full overflow-hidden relative">
-        <Routes>
-          <Route path="/" element={
-            <div className="flex h-full w-full bg-[#040812]">
-              {/* Chat Centered Focus Container */}
-              <div className="flex-1 flex justify-center pt-5 pb-0 px-4 overflow-hidden h-full">
-                <div 
-                  className="w-full max-w-4xl h-full rounded-t-2xl shadow-2xl relative overflow-hidden flex flex-col transition-all duration-300"
-                  style={{
-                    background: 'rgba(8,13,26,0.95)',
-                    border: '1px solid rgba(167,139,250,0.15)',
-                    borderBottom: 'none',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(167,139,250,0.1)',
-                  }}
-                >
-                  <ChatContainer />
+        <main className="flex-1 min-w-0 h-full overflow-hidden relative">
+          <Routes>
+            <Route path="/" element={
+              <div className="flex h-full w-full bg-[#040812]">
+                {/* Chat Centered Focus Container */}
+                <div className="flex-1 flex justify-center pt-5 pb-0 px-4 overflow-hidden h-full">
+                  <div 
+                    className="w-full max-w-4xl h-full rounded-t-2xl shadow-2xl relative overflow-hidden flex flex-col transition-all duration-300"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.95)',
+                      border: '1px solid rgba(51, 65, 85, 0.5)',
+                      borderBottom: 'none',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
+                    }}
+                  >
+                    <ChatContainer />
+                  </div>
                 </div>
+
+                <ResizableDivider 
+                  onMouseDown={() => setDragging('right')} 
+                  collapsed={insightCollapsed} 
+                  onToggle={() => setInsightCollapsed(!insightCollapsed)} 
+                  isLeft={false} 
+                />
+                
+                <InsightPanel 
+                  width={insightW} 
+                  collapsed={insightCollapsed} 
+                  isDragging={dragging === 'right'}
+                />
               </div>
+            } />
 
-              <ResizableDivider 
-                onMouseDown={() => setDragging('right')} 
-                collapsed={insightCollapsed} 
-                onToggle={() => setInsightCollapsed(!insightCollapsed)} 
-                isLeft={false} 
-              />
-              
-              <InsightPanel 
-                width={insightW} 
-                collapsed={insightCollapsed} 
-                isDragging={dragging === 'right'}
-              />
-            </div>
-          } />
-
-          <Route path="/dashboard" element={<ControlCenter />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-    </div>
+            <Route path="/dashboard" element={<ControlCenter />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </ChatProvider>
   );
 };
 

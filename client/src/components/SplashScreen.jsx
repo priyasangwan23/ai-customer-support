@@ -27,7 +27,7 @@ const Cursor = () => (
     animate={{ opacity: [1, 0, 1] }}
     transition={{ duration: 0.75, repeat: Infinity }}
     className="inline-block w-[2px] h-[0.85em] align-middle ml-[2px] rounded-full"
-    style={{ background: '#A78BFA', willChange: 'opacity' }}
+    style={{ background: '#60A5FA', willChange: 'opacity' }}
   />
 );
 
@@ -43,8 +43,8 @@ const Spinner = () => (
     >
       <defs>
         <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#6D28D9" />
-          <stop offset="100%" stopColor="#A78BFA" />
+          <stop offset="0%"   stopColor="#2563EB" />
+          <stop offset="100%" stopColor="#60A5FA" />
         </linearGradient>
       </defs>
       <circle cx="24" cy="24" r="20" fill="none" stroke="url(#sg)"
@@ -57,14 +57,14 @@ const Spinner = () => (
       style={{ willChange: 'transform' }}
       viewBox="0 0 24 24"
     >
-      <circle cx="12" cy="12" r="8" fill="none" stroke="#A78BFA"
+      <circle cx="12" cy="12" r="8" fill="none" stroke="#60A5FA"
         strokeWidth="2" strokeLinecap="round" strokeDasharray="18 32" strokeOpacity="0.35" />
     </motion.svg>
     <motion.div
       animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
       transition={{ duration: 1.4, repeat: Infinity }}
       className="w-1.5 h-1.5 rounded-full"
-      style={{ background: '#A78BFA', willChange: 'transform, opacity' }}
+      style={{ background: '#60A5FA', willChange: 'transform, opacity' }}
     />
   </div>
 );
@@ -73,7 +73,7 @@ const Spinner = () => (
 const Particle = ({ x, y, size, delay, dur }) => (
   <motion.div
     className="absolute rounded-full pointer-events-none"
-    style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: '#A78BFA', willChange: 'transform, opacity', filter: 'blur(1px)' }}
+    style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, background: '#60A5FA', willChange: 'transform, opacity', filter: 'blur(1px)' }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{ opacity: [0, 0.8, 0], scale: [0, 1.5, 0], y: [0, -60, -120] }}
     transition={{ duration: dur, delay, repeat: Infinity, ease: 'easeOut' }}
@@ -152,7 +152,7 @@ const SplashScreen = ({ onComplete }) => {
           width: 800, height: 800,
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, rgba(109,40,217,0.2) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 60%)',
           willChange: 'transform',
         }}
       />
@@ -173,12 +173,12 @@ const SplashScreen = ({ onComplete }) => {
                 {...cinematicVariant(WORD1_DELAY)}
                 className="text-6xl md:text-7xl lg:text-8xl tracking-tighter font-black uppercase text-center"
                 style={{
-                  background: 'linear-gradient(180deg, #E9D5FF 0%, #A78BFA 45%, #6D28D9 100%)',
+                  background: 'linear-gradient(180deg, #DBEAFE 0%, #60A5FA 45%, #2563EB 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
                   display: 'block',
-                  textShadow: '0 10px 40px rgba(109,40,217,0.7)',
+                  textShadow: '0 10px 40px rgba(37,99,235,0.7)',
                   willChange: 'transform, opacity, filter',
                 }}
               >
@@ -188,12 +188,12 @@ const SplashScreen = ({ onComplete }) => {
                 {...cinematicVariant(WORD2_DELAY)}
                 className="text-6xl md:text-7xl lg:text-8xl tracking-tighter font-black uppercase"
                 style={{
-                  background: 'linear-gradient(180deg, #FFFFFF 0%, #C4B5FD 45%, #A78BFA 100%)',
+                  background: 'linear-gradient(180deg, #FFFFFF 0%, #93C5FD 45%, #60A5FA 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
                   display: 'block',
-                  textShadow: '0 10px 40px rgba(167,139,250,0.8)',
+                  textShadow: '0 10px 40px rgba(59,130,246,0.8)',
                   willChange: 'transform, opacity, filter',
                 }}
               >
@@ -210,9 +210,9 @@ const SplashScreen = ({ onComplete }) => {
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                   className="h-[3px] w-3/4 max-w-lg rounded-full"
                   style={{
-                    background: 'linear-gradient(90deg, transparent, #6D28D9, #D8B4FE, #6D28D9, transparent)',
+                    background: 'linear-gradient(90deg, transparent, #2563EB, #BFDBFE, #2563EB, transparent)',
                     transformOrigin: 'center',
-                    boxShadow: '0 0 20px rgba(167,139,250,0.8), 0 0 40px rgba(109,40,217,0.5)',
+                    boxShadow: '0 0 20px rgba(96,165,250,0.8), 0 0 40px rgba(37,99,235,0.5)',
                     willChange: 'transform, opacity',
                   }}
                 />
@@ -224,8 +224,8 @@ const SplashScreen = ({ onComplete }) => {
               <span
                 className="text-base md:text-lg font-bold tracking-[0.3em] uppercase"
                 style={{ 
-                  color: '#C4B5FD', 
-                  textShadow: '0 0 10px rgba(167,139,250,0.5)'
+                  color: '#93C5FD', 
+                  textShadow: '0 0 10px rgba(96,165,250,0.5)'
                 }}
               >
                 {tagline.displayed}
@@ -248,7 +248,7 @@ const SplashScreen = ({ onComplete }) => {
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ duration: 1.8, repeat: Infinity }}
                     className="text-xs font-bold uppercase tracking-[0.3em]"
-                    style={{ color: '#A78BFA' }}
+                    style={{ color: '#60A5FA' }}
                   >
                     Initializing
                   </motion.p>

@@ -30,7 +30,7 @@ const StreamingText = ({ text, isStreaming }) => {
       {isStreaming && displayed.length < text.length && (
         <span
           className="inline-block w-0.5 h-[1em] ml-0.5 align-middle animate-glow-pulse"
-          style={{ background: '#A78BFA', verticalAlign: 'text-bottom' }}
+          style={{ background: '#3B82F6', verticalAlign: 'text-bottom' }}
         />
       )}
     </span>
@@ -54,16 +54,16 @@ const MessageBubble = ({ message, isNew = false }) => {
           whileHover={{ scale: 1.1 }}
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mb-1 avatar-pulse"
           style={isBot
-            ? {
-                background: 'linear-gradient(135deg, #7C3AED, #9B4DFF)',
-                boxShadow: '0 0 14px rgba(124,58,237,0.5)',
-                border: '1.5px solid rgba(167,139,250,0.3)',
-              }
-            : {
-                background: 'linear-gradient(135deg, #1E2D47, #283D5E)',
-                border: '1.5px solid rgba(167,139,250,0.2)',
-                boxShadow: '0 0 8px rgba(0,0,0,0.3)',
-              }
+              ? {
+                  background: '#3B82F6',
+                  boxShadow: '0 2px 8px rgba(59,130,246,0.3)',
+                  border: '1.5px solid rgba(59,130,246,0.5)',
+                }
+              : {
+                  background: '#1E293B',
+                  border: '1.5px solid rgba(51,65,85,0.8)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }
           }
         >
           {isBot
@@ -95,7 +95,7 @@ const MessageBubble = ({ message, isNew = false }) => {
               <div
                 className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(124,58,237,0.04) 0%, transparent 60%)',
+                  background: 'rgba(59,130,246,0.03)',
                 }}
               />
             )}
@@ -110,7 +110,7 @@ const MessageBubble = ({ message, isNew = false }) => {
               <Clock className="w-2.5 h-2.5" />
               <span>{timestamp}</span>
               {!isBot && (
-                <CheckCheck className="w-3 h-3 ml-0.5" style={{ color: 'rgba(196,181,253,0.7)' }} />
+                <CheckCheck className="w-3 h-3 ml-0.5" style={{ color: 'rgba(255,255,255,0.6)' }} />
               )}
             </div>
 

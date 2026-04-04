@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const chatRoutes = require('./routes/chat');
 const faqRoutes = require('./routes/faq');
+const historyRoutes = require('./routes/history');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,7 @@ app.use(cors());
 // Routes
 app.use('/api/chat', chatRoutes);
 app.use('/api/faq', faqRoutes);
+app.use('/api/history', historyRoutes);
 
 // MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;

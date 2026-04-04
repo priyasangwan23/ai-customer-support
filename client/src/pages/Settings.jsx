@@ -55,8 +55,6 @@ const Settings = () => {
   return (
     <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative" style={{ background: '#0B1120' }}>
       {/* Background ambient glow matching the main theme */}
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] pointer-events-none animate-float opacity-30"
-        style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)', willChange: 'transform' }} />
         
       <header className="mb-10 z-10 relative">
         <motion.h1 
@@ -64,7 +62,7 @@ const Settings = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-3xl font-bold text-white mb-2 flex items-center"
         >
-          Configuration <Shield className="ml-3 text-purple-400" size={26} />
+          Configuration <Shield className="ml-3 text-blue-500" size={26} />
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0 }}
@@ -98,7 +96,7 @@ const Settings = () => {
                 name="chatbotName"
                 value={formData.chatbotName}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
                 placeholder="e.g. Support Assistant"
               />
             </div>
@@ -114,7 +112,7 @@ const Settings = () => {
                   name="supportEmail"
                   value={formData.supportEmail}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
                   placeholder="support@example.com"
                 />
               </div>
@@ -131,7 +129,7 @@ const Settings = () => {
           style={{ background: '#111827', border: '1px solid #1F2937' }}
         >
           <h2 className="text-lg font-bold text-gray-200 mb-6 flex items-center">
-            <Palette className="mr-2 text-pink-400" size={20} /> Interface & Tone
+            <Palette className="mr-2 text-blue-400" size={20} /> Interface & Tone
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -141,7 +139,7 @@ const Settings = () => {
                 <button 
                   type="button"
                   onClick={handleToggleTheme}
-                  className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none ${formData.theme === 'dark' ? 'bg-purple-600' : 'bg-gray-600'}`}
+                  className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none ${formData.theme === 'dark' ? 'bg-blue-600' : 'bg-gray-600'}`}
                 >
                   <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formData.theme === 'dark' ? 'translate-x-8' : 'translate-x-1'}`} />
                 </button>
@@ -155,7 +153,7 @@ const Settings = () => {
                 name="botPersona"
                 value={formData.botPersona}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
                 style={{ appearance: 'none' }}
               >
                 <option value="professional">Professional & Direct</option>
@@ -187,7 +185,7 @@ const Settings = () => {
                 </div>
                 <div className="relative">
                   <input type="checkbox" name="autoReply" className="sr-only" checked={formData.autoReply} onChange={handleChange} />
-                  <div className={`block w-10 h-6 rounded-full transition-colors ${formData.autoReply ? 'bg-purple-600' : 'bg-gray-600'}`}></div>
+                  <div className={`block w-10 h-6 rounded-full transition-colors ${formData.autoReply ? 'bg-blue-600' : 'bg-gray-600'}`}></div>
                   <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.autoReply ? 'translate-x-4' : 'translate-x-0'}`}></div>
                 </div>
               </label>
@@ -202,7 +200,7 @@ const Settings = () => {
                 value={formData.confidenceThreshold} 
                 onChange={handleChange}
                 className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: '#A78BFA' }}
+                style={{ accentColor: '#3B82F6' }}
               />
               <div className="flex justify-between text-xs text-gray-500 mt-2">
                 <span>More Answers</span>
@@ -220,7 +218,7 @@ const Settings = () => {
                   name="language"
                   value={formData.language}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
                   style={{ appearance: 'none' }}
                 >
                   <option value="english">English (US)</option>
@@ -243,7 +241,7 @@ const Settings = () => {
             className={`flex items-center px-6 py-3 rounded-xl font-medium transition-all ${
               saveSuccess 
                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50' 
-                : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/25 border border-purple-500/50'
+                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/25 border border-blue-500/50'
             }`}
           >
             {isSaving ? (

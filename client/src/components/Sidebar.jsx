@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, MessageSquare, BarChart2, Settings, Zap,
-  ChevronLeft, ChevronRight, Activity, Bell, Users
+  Plus, Trash2, Clock
 } from 'lucide-react';
 import BrandLogo from './BrandLogo';
+import { useChatHistory } from '../context/ChatContext';
 
 const menuItems = [
   { name: 'Main Dashboard', icon: LayoutDashboard, path: '/dashboard', badge: null },
@@ -14,7 +15,39 @@ const menuItems = [
   { name: 'Settings',       icon: Settings,        path: '/settings',   badge: null },
 ];
 
+const formatRelativeTime = (dateStr) => {
+  if (!dateStr) return '';
+  const ts = new Date(dateStr).getTime();
+  if (isNaN(ts)) return '';
+  const diff = (Date.now() - ts) / 1000;
+  if (diff < 60)    return 'just now';
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+};
+
 const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = false }) => {
+  const navigate = useNavigate();
+  const {
+    conversations,
+    activeConversationId,
+    setActiveConversationId,
+    isLoadingHistory,
+    createConversation,
+    deleteConversation,
+    useDummy,
+  } = useChatHistory();
+
+  const handleNewChat = async () => {
+    navigate('/');
+    await createConversation('New Conversation');
+  };
+
+  const handleSelectConversation = (convId) => {
+    setActiveConversationId(convId);
+    navigate('/');
+  };
+
   return (
     <motion.aside
       animate={{ width: collapsed ? 72 : width }}
@@ -25,34 +58,16 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
         borderRight: '1px solid rgba(30, 45, 71, 0.7)',
       }}
     >
-      {/* Ambient gradient orb */}
-      <div
-        className="absolute -bottom-24 -left-12 w-72 h-72 rounded-full pointer-events-none animate-float"
-        style={{
-          background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
-          willChange: 'transform',
-        }}
-      />
-      <div
-        className="absolute top-20 -right-16 w-48 h-48 rounded-full pointer-events-none animate-float"
-        style={{
-          background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)',
-          animationDelay: '3s',
-          willChange: 'transform',
-        }}
-      />
-
-
-      {/* Brand */}
-      <div className={`flex items-center gap-3 mb-8 relative z-10 ${collapsed ? 'px-3 pt-5 justify-center' : 'px-6 pt-6'}`}>
+      {/* ── Brand ─────────────────────────────────────────────── */}
+      <div className={`flex items-center gap-3 mb-6 relative z-10 ${collapsed ? 'px-3 pt-5 justify-center' : 'px-6 pt-6'}`}>
         <motion.div
           whileHover={{ scale: 1.1, rotate: 3 }}
           transition={{ type: 'spring', stiffness: 320, damping: 15 }}
-          className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 glow-ring"
+          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
           style={{
-            background: 'rgba(10, 15, 28, 0.8)',
-            border: '1.5px solid rgba(167,139,250,0.35)',
-            boxShadow: '0 0 20px rgba(124,58,237,0.35)',
+            background: 'rgba(15, 23, 42, 1)',
+            border: '1px solid rgba(51, 65, 85, 0.8)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
             willChange: 'transform',
           }}
         >
@@ -78,8 +93,8 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
         </AnimatePresence>
       </div>
 
-      {/* Nav */}
-      <nav className={`flex-1 space-y-1 relative z-10 ${collapsed ? 'px-2' : 'px-4'}`}>
+      {/* ── Nav ───────────────────────────────────────────────── */}
+      <nav className={`space-y-1 relative z-10 ${collapsed ? 'px-2' : 'px-4'}`}>
         {!collapsed && (
           <p className="text-[9px] font-bold uppercase tracking-[0.15em] px-3 mb-3" style={{ color: '#475569' }}>
             Navigation
@@ -87,59 +102,33 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
         )}
 
         {menuItems.map((item, i) => (
-          <NavLink
-            key={item.name}
-            to={item.path}
-            end={item.path === '/'}
-            className="block"
-          >
+          <NavLink key={item.name} to={item.path} end={item.path === '/'} className="block">
             {({ isActive }) => (
               <motion.div
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.07, type: 'spring', stiffness: 260, damping: 22 }}
                 whileHover={{ x: collapsed ? 0 : 3 }}
-                className={`flex items-center gap-3 rounded-xl text-sm font-semibold cursor-pointer relative overflow-hidden group
-                  ${collapsed ? 'justify-center p-3' : 'px-3 py-2.5'}
-                `}
+                className={`flex items-center gap-3 rounded-xl text-sm font-semibold cursor-pointer relative overflow-hidden group ${collapsed ? 'justify-center p-3' : 'px-3 py-2.5'}`}
                 style={
                   isActive
-                    ? {
-                        background: 'linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(167,139,250,0.08) 100%)',
-                        border: '1px solid rgba(167,139,250,0.25)',
-                        color: '#C4B5FD',
-                        boxShadow: '0 0 20px rgba(124,58,237,0.15), inset 0 1px 0 rgba(167,139,250,0.1)',
-                      }
-                    : {
-                        background: 'transparent',
-                        border: '1px solid transparent',
-                        color: '#64748B',
-                      }
+                    ? { background: 'rgba(59,130,246,0.1)', border: '1px solid transparent', color: '#3B82F6' }
+                    : { background: 'transparent', border: '1px solid transparent', color: '#64748B' }
                 }
               >
-                {/* Active left bar */}
                 {isActive && !collapsed && (
                   <motion.div
                     layoutId="activeBar"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-full"
-                    style={{ background: 'linear-gradient(180deg, #A78BFA, #7C3AED)' }}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-md"
+                    style={{ background: '#3B82F6' }}
                   />
                 )}
-
-                {/* Hover shimmer */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(124,58,237,0.06) 0%, transparent 100%)',
-                  }}
-                />
-
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none bg-white/5" />
                 <item.icon
-                  className="flex-shrink-0 transition-all duration-200 group-hover:scale-110"
+                  className="flex-shrink-0 transition-all duration-200 group-hover:scale-105"
                   size={16}
-                  style={{ color: isActive ? '#A78BFA' : 'currentColor', willChange: 'transform' }}
+                  style={{ color: isActive ? '#3B82F6' : 'currentColor', willChange: 'transform' }}
                 />
-
                 <AnimatePresence>
                   {!collapsed && (
                     <motion.div
@@ -153,11 +142,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                       {item.badge && (
                         <span
                           className="ml-auto text-[9px] font-black px-1.5 py-0.5 rounded-full flex-shrink-0"
-                          style={{
-                            background: 'linear-gradient(135deg, #7C3AED, #A78BFA)',
-                            color: '#fff',
-                            boxShadow: '0 0 8px rgba(124,58,237,0.5)',
-                          }}
+                          style={{ background: '#3B82F6', color: '#fff' }}
                         >
                           {item.badge}
                         </span>
@@ -165,13 +150,8 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
                     </motion.div>
                   )}
                 </AnimatePresence>
-
-                {/* Active dot for collapsed */}
                 {isActive && collapsed && (
-                  <span
-                    className="absolute bottom-1.5 right-1.5 w-1 h-1 rounded-full badge-glow"
-                    style={{ background: '#A78BFA' }}
-                  />
+                  <span className="absolute bottom-1.5 right-1.5 w-1.5 h-1.5 rounded-full" style={{ background: '#3B82F6' }} />
                 )}
               </motion.div>
             )}
@@ -179,7 +159,125 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
         ))}
       </nav>
 
-      {/* Status bar */}
+      {/* ── Chat History ──────────────────────────────────────── */}
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1 flex flex-col px-4 mt-5 min-h-0 relative z-10"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3 flex-shrink-0">
+              <div className="flex items-center gap-2">
+                <Clock className="w-3.5 h-3.5" style={{ color: '#475569' }} />
+                <p className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: '#475569' }}>
+                  Recent Chats
+                </p>
+                {useDummy && (
+                  <span
+                    className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{ background: 'rgba(245,158,11,0.1)', color: '#F59E0B' }}
+                  >
+                    DEMO
+                  </span>
+                )}
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleNewChat}
+                className="w-6 h-6 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(59,130,246,0.15)', color: '#3B82F6' }}
+                title="New Chat"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </motion.button>
+            </div>
+
+            {/* Scrollable list */}
+            <div className="flex-1 overflow-y-auto space-y-1" style={{ minHeight: 0 }}>
+              {isLoadingHistory ? (
+                <div className="space-y-2 pr-1">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-10 rounded-lg animate-pulse" style={{ background: 'rgba(30,45,71,0.4)' }} />
+                  ))}
+                </div>
+              ) : conversations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <MessageSquare className="w-8 h-8 mb-2" style={{ color: '#1E2D47' }} />
+                  <p className="text-xs" style={{ color: '#475569' }}>No chats yet</p>
+                  <p className="text-[10px] mt-1" style={{ color: '#334155' }}>Start a new conversation</p>
+                </div>
+              ) : (
+                conversations.map((conv) => {
+                  const isActive = conv._id === activeConversationId;
+                  return (
+                    <motion.div
+                      key={conv._id}
+                      whileHover={{ x: 2 }}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer group relative"
+                      style={{
+                        background: isActive ? 'rgba(59,130,246,0.1)' : 'transparent',
+                        border: `1px solid ${isActive ? 'rgba(59,130,246,0.2)' : 'transparent'}`,
+                      }}
+                      onClick={() => handleSelectConversation(conv._id)}
+                    >
+                      {isActive && (
+                        <div
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r"
+                          style={{ background: '#3B82F6' }}
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="text-xs font-semibold truncate"
+                          style={{ color: isActive ? '#60A5FA' : '#94A3B8' }}
+                        >
+                          {conv.title}
+                        </p>
+                        <p className="text-[9px] mt-0.5" style={{ color: '#475569' }}>
+                          {formatRelativeTime(conv.updatedAt)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteConversation(conv._id); }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 p-0.5 rounded"
+                        style={{ color: '#475569' }}
+                        title="Delete conversation"
+                        onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#475569'}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </motion.div>
+                  );
+                })
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Collapsed mode: just a "New Chat" button */}
+      {collapsed && (
+        <div className="flex-1 flex flex-col items-center pt-4 relative z-10 px-2">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleNewChat}
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}
+            title="New Chat"
+          >
+            <Plus className="w-4 h-4" />
+          </motion.button>
+        </div>
+      )}
+
+      {/* ── Status bar ────────────────────────────────────────── */}
       <div className={`relative z-10 mt-4 ${collapsed ? 'px-2 pb-5' : 'px-4 pb-5'}`}>
         <motion.div
           whileHover={{ y: -2 }}
@@ -191,13 +289,10 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
           }}
         >
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(167,139,250,0.1))',
-              border: '1px solid rgba(167,139,250,0.2)',
-            }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(51, 65, 85, 0.3)', border: '1px solid rgba(51, 65, 85, 0.6)' }}
           >
-            <Zap className="w-4 h-4" style={{ color: '#A78BFA' }} />
+            <Zap className="w-4 h-4" style={{ color: '#94A3B8' }} />
           </div>
 
           <AnimatePresence>
@@ -216,10 +311,7 @@ const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = fa
           </AnimatePresence>
 
           {!collapsed && (
-            <div
-              className="w-2 h-2 rounded-full flex-shrink-0 neon-glow"
-              style={{ background: '#10B981' }}
-            />
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: '#10B981' }} />
           )}
         </motion.div>
       </div>

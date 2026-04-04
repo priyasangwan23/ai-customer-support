@@ -49,9 +49,7 @@ const StatCard = ({ title, value, icon: Icon, trend, colorClass }) => (
 const Analytics = () => {
   return (
     <div className="flex-1 w-full h-full overflow-y-auto px-8 py-8 relative" style={{ background: '#0B1120' }}>
-      {/* Background ambient glow matching the main theme */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none animate-float opacity-30"
-        style={{ background: 'radial-gradient(circle, rgba(109,40,217,0.07) 0%, transparent 65%)', willChange: 'transform' }} />
+      {/* Background ambient glow removed for clean SaaS theme */}
         
       <header className="mb-10 z-10 relative">
         <motion.h1 
@@ -79,7 +77,7 @@ const Analytics = () => {
           value={analyticsData.totalChats.toLocaleString()} 
           icon={MessageSquare} 
           trend="+12%" 
-          colorClass="text-blue-400" 
+          colorClass="text-blue-500" 
         />
         
         <StatCard 
@@ -87,15 +85,14 @@ const Analytics = () => {
           value={analyticsData.resolvedQueries.toLocaleString()} 
           icon={CheckCircle} 
           trend="+5%" 
-          colorClass="text-emerald-400" 
+          colorClass="text-blue-400" 
         />
         
         <StatCard 
           title="User Satisfaction" 
           value={`${analyticsData.userSatisfaction}%`} 
           icon={Smile} 
-          trend="+2.4%" 
-          colorClass="text-purple-400" 
+          colorClass="text-indigo-400" 
         />
 
         <StatCard 
@@ -103,21 +100,21 @@ const Analytics = () => {
           value={analyticsData.avgResponseTime} 
           icon={Clock} 
           trend="-0.3s" 
-          colorClass="text-yellow-400" 
+          colorClass="text-blue-300" 
         />
 
         <StatCard 
           title="Active Users" 
           value={analyticsData.activeUsers} 
           icon={Users} 
-          colorClass="text-pink-400" 
+          colorClass="text-indigo-500" 
         />
 
         <StatCard 
           title="Escalation Rate" 
           value={analyticsData.escalationRate} 
           icon={TrendingUp} 
-          colorClass="text-red-400" 
+          colorClass="text-slate-400" 
         />
 
       </div>

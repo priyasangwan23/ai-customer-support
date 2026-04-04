@@ -8,18 +8,18 @@ const BrandLogo = ({ className = "w-6 h-6" }) => {
         viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full filter drop-shadow-[0_0_12px_rgba(167,139,250,0.8)] drop-shadow-[0_0_4px_rgba(109,40,217,0.6)]"
+        className="w-full h-full filter drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] drop-shadow-[0_0_4px_rgba(37,99,235,0.6)]"
       >
         <defs>
           <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#DDD6FE" />
-            <stop offset="50%" stopColor="#A78BFA" />
-            <stop offset="100%" stopColor="#6D28D9" />
+            <stop offset="0%" stopColor="#DBEAFE" />
+            <stop offset="50%" stopColor="#60A5FA" />
+            <stop offset="100%" stopColor="#2563EB" />
           </linearGradient>
           
           <filter id="logo-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feFlood floodColor="#A78BFA" floodOpacity="0.8" result="color" />
+            <feFlood floodColor="#60A5FA" floodOpacity="0.8" result="color" />
             <feComposite in="color" in2="blur" operator="in" result="glow" />
             <feComposite in="SourceGraphic" in2="glow" operator="over" />
           </filter>
@@ -35,7 +35,7 @@ const BrandLogo = ({ className = "w-6 h-6" }) => {
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          fill="rgba(109, 40, 217, 0.1)"
+          fill="rgba(37, 99, 235, 0.1)"
         />
 
         {/* Inner Shield / Hexagon Shadow */}

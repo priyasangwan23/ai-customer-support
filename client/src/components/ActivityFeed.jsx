@@ -21,8 +21,8 @@ const ActivityFeed = ({ event, time, status }) => {
       style={{ border: '1px solid #1F2937', background: 'rgba(17, 24, 39, 0.2)' }}
     >
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" 
-        style={{ background: 'rgba(109, 40, 217, 0.1)', border: '1px solid rgba(167, 139, 250, 0.15)' }}>
-        <Icon className="w-5 h-5" style={{ color: colors[status] || '#A78BFA' }} />
+        style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.15)' }}>
+        <Icon className="w-5 h-5" style={{ color: colors[status] || '#60A5FA' }} />
       </div>
       
       <div className="flex-1 min-w-0">
@@ -35,7 +35,7 @@ const ActivityFeed = ({ event, time, status }) => {
 
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full" 
-          style={{ background: colors[status] || '#A78BFA', boxShadow: `0 0 8px ${colors[status] || '#A78BFA'}` }} />
+          style={{ background: colors[status] || '#60A5FA', boxShadow: `0 0 8px ${colors[status] || '#60A5FA'}` }} />
       </div>
     </motion.div>
   );
