@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import {
@@ -14,13 +14,11 @@ const menuItems = [
   { name: 'Settings',       icon: Settings,        path: '/settings',   badge: null },
 ];
 
-const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
+const Sidebar = ({ width = 288, collapsed = false, setCollapsed, isDragging = false }) => {
   return (
     <motion.aside
-      animate={{ width: collapsed ? 72 : 288 }}
-      transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+      animate={{ width: collapsed ? 72 : width }}
+      transition={{ duration: isDragging ? 0 : 0.35, ease: [0.4, 0, 0.2, 1] }}
       className="h-full flex flex-col flex-shrink-0 relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #060E1E 0%, #080F1E 60%, #060B18 100%)',
@@ -44,22 +42,6 @@ const Sidebar = () => {
         }}
       />
 
-      {/* Collapse toggle */}
-      <motion.button
-        onClick={() => setCollapsed(p => !p)}
-        whileHover={{ scale: 1.15 }}
-        whileTap={{ scale: 0.9 }}
-        className="absolute -right-3.5 top-16 z-20 w-7 h-7 rounded-full flex items-center justify-center shadow-lg"
-        style={{
-          background: 'linear-gradient(135deg, #7C3AED, #9B4DFF)',
-          border: '1.5px solid rgba(167,139,250,0.4)',
-          boxShadow: '0 0 14px rgba(124,58,237,0.5)',
-        }}
-      >
-        {collapsed
-          ? <ChevronRight className="w-3.5 h-3.5 text-white" />
-          : <ChevronLeft  className="w-3.5 h-3.5 text-white" />}
-      </motion.button>
 
       {/* Brand */}
       <div className={`flex items-center gap-3 mb-8 relative z-10 ${collapsed ? 'px-3 pt-5 justify-center' : 'px-6 pt-6'}`}>

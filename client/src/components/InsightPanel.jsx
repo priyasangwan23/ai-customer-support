@@ -92,7 +92,7 @@ const sentimentConfig = {
   Negative: { icon: Frown,  color: '#EF4444', bgColor: 'rgba(239,68,68,0.08)',  borderColor: 'rgba(239,68,68,0.2)',  label: 'Frustration Detected' },
 };
 
-const InsightPanel = () => {
+const InsightPanel = ({ width = 320, collapsed = false, isDragging = false }) => {
   const [sentiment, setSentiment]     = useState('Positive');
   const [confidence, setConfidence]   = useState(94.8);
   const [intent, setIntent]           = useState('Order Tracking');
@@ -115,12 +115,14 @@ const InsightPanel = () => {
   const SentIcon = sConf.icon;
 
   return (
-    <aside
-      className="w-80 h-full flex flex-col gap-5 flex-shrink-0 relative overflow-y-auto overflow-x-hidden"
+    <motion.aside
+      animate={{ width: collapsed ? 0 : width, opacity: collapsed ? 0 : 1 }}
+      transition={{ duration: isDragging ? 0 : 0.35, ease: [0.4, 0, 0.2, 1] }}
+      className="h-full flex flex-col gap-5 flex-shrink-0 relative overflow-y-auto overflow-x-hidden"
       style={{
         background: 'linear-gradient(180deg, #060E1E 0%, #080F1E 100%)',
         borderLeft: '1px solid rgba(30,45,71,0.7)',
-        padding: '24px 20px',
+        padding: collapsed ? '0' : '24px 20px',
       }}
     >
       {/* Ambient orb */}
@@ -324,7 +326,7 @@ const InsightPanel = () => {
           Reset Session
         </motion.button>
       </div>
-    </aside>
+    </motion.aside>
   );
 };
 

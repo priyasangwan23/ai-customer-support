@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Bot, Send, Paperclip, Mic, Activity, Wifi, Sparkles,
-  ChevronDown, Maximize2, Minimize2
+  Bot, Send, Paperclip, Mic, Activity, Wifi, Sparkles, ChevronDown
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import QuickActions from './QuickActions';
@@ -75,7 +74,6 @@ const ChatContainer = () => {
   const [newMsgId, setNewMsgId]           = useState(null);
   const [inputFocused, setInputFocused]   = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-  const [isFullscreen, setIsFullscreen]   = useState(false);
   const [settings, setSettings]           = useState({ chatbotName: 'SupportSense Assistant', theme: 'dark' });
 
   const bottomRef    = useRef(null);
@@ -145,8 +143,8 @@ const ChatContainer = () => {
 
   return (
     <div
-      className={`flex flex-col ${isFullscreen ? 'fixed inset-0 z-50' : 'flex-1 h-full'}`}
-      style={{ background: '#060B18' }}
+      className="flex flex-col flex-1 h-full rounded-2xl overflow-hidden relative"
+      style={{ background: 'transparent' }}
     >
       {/* Ambient background orbs */}
       <div
@@ -223,25 +221,6 @@ const ChatContainer = () => {
           >
             <Sparkles className="w-3 h-3" /> GPT-4o
           </motion.div>
-
-          {/* Fullscreen toggle */}
-          <motion.button
-            id="fullscreen-toggle"
-            onClick={() => setIsFullscreen(p => !p)}
-            whileHover={{ scale: 1.12 }}
-            whileTap={{ scale: 0.9 }}
-            title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-            className="w-8 h-8 flex items-center justify-center rounded-xl"
-            style={{
-              background: isFullscreen ? 'rgba(124,58,237,0.15)' : 'rgba(30,45,71,0.5)',
-              border: `1px solid ${isFullscreen ? 'rgba(167,139,250,0.3)' : 'rgba(30,45,71,0.8)'}`,
-              color: isFullscreen ? '#A78BFA' : '#64748B',
-            }}
-          >
-            {isFullscreen
-              ? <Minimize2 className="w-3.5 h-3.5" />
-              : <Maximize2 className="w-3.5 h-3.5" />}
-          </motion.button>
         </div>
       </header>
 
@@ -301,7 +280,7 @@ const ChatContainer = () => {
 
       {/* ── INPUT ──────────────────────────────────────────── */}
       <footer
-        className="px-5 py-4 flex-shrink-0 relative"
+        className="px-5 py-3 flex-shrink-0 relative"
         style={{
           background: 'rgba(6,11,24,0.95)',
           borderTop: '1px solid rgba(30,45,71,0.6)',
@@ -317,7 +296,7 @@ const ChatContainer = () => {
             borderColor: inputFocused ? 'rgba(167,139,250,0.4)' : 'rgba(30,45,71,0.6)',
           }}
           transition={{ duration: 0.25 }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl"
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl"
           style={{ background: 'rgba(13,21,38,0.9)', border: '1px solid rgba(30,45,71,0.6)' }}
         >
           <motion.button
@@ -338,7 +317,7 @@ const ChatContainer = () => {
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
             placeholder="Ask SupportSense AI anything…"
-            className="flex-1 bg-transparent text-[13px] focus:outline-none placeholder:text-[#374151]"
+            className="flex-1 bg-transparent text-[15px] focus:outline-none placeholder:text-[#64748B]"
             style={{ color: '#E2E8F0' }}
           />
 
