@@ -138,6 +138,9 @@ const ChatContainer = () => {
   const recognitionRef = useRef(null); 
   const loadedConvRef = useRef(null);
 
+  // ── Production API Base ───────────────────────────
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   // ── Settings from localStorage ────────────────────────────
   useEffect(() => {
     const saved = localStorage.getItem('chatSettings');
@@ -370,7 +373,7 @@ const ChatContainer = () => {
         formData.append('file', fileToSend);
         
         try {
-          const uploadRes = await fetch('http://localhost:5000/api/upload', {
+          const uploadRes = await fetch(`${API_BASE}/api/upload`, {
             method: 'POST',
             body: formData
           });
@@ -409,7 +412,7 @@ const ChatContainer = () => {
 
       // 🔥 FIXED: Always send JSON to /api/chat. 
       // The file was already uploaded to /api/upload.
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

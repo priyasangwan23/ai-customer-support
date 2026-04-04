@@ -33,7 +33,8 @@ const DUMMY_CONVERSATIONS = [
   },
 ];
 
-const API = 'http://localhost:5000/api/history';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API = `${API_BASE}/api/history`;
 
 export const ChatProvider = ({ children }) => {
   const [conversations, setConversations]               = useState([]);

@@ -43,10 +43,12 @@ const Analytics = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/analytics');
+      const res = await fetch(`${API_BASE}/api/analytics`);
       const json = await res.json();
       setData(json);
     } catch (err) {
